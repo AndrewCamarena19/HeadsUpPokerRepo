@@ -1,0 +1,58 @@
+{
+  "project_info": {
+    "project_number": "907589255601",
+    "firebase_url": "https://ultra-mason-176521.firebaseio.com",
+    "project_id": "ultra-mason-176521",
+    "storage_bucket": "ultra-mason-176521.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907589255601:android:5eb27e1f30dc9928",
+        "android_client_info": {
+          "package_name": "com.andyisdope.headsuppoker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "907589255601-tgk79jqlnha4ufavme075bjbu4hiv9mb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.andyisdope.headsuppoker",
+            "certificate_hash": "6d235c3c4cf6080252815b4373f1579dbce97635"
+          }
+        },
+        {
+          "client_id": "907589255601-ha5qgultvruvgntfnkms7dl1m18ork2f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUWo9dwz4VC-sa1ERXgTjzu8DPEIkU_-U"
+        },
+        {
+          "current_key": "AIzaSyC_wdsBMD9eFz2Djcuk1YKoL0xBrCYbHPs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "907589255601-ha5qgultvruvgntfnkms7dl1m18ork2f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

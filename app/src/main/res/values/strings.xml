@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">PokerApp</string>
+    <string name="Call">Call</string>
+    <string name="Fold">Fold</string>
+    <string name="Raise">Raise</string>
+    <string name="Bet">Bet</string>
+    <string name="Check">Check</string>
+    <string name="Message">Enter Message Here</string>
+    <string name="BetAmount">Bet Amount</string>
+    <string name="Card"> A Card</string>
+    <string name="TakeSeat">Take Seat</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="Players">Players</string>
+    <string name="Game">Game</string>
+    <string name="Stakes">Stakes</string>
+    <string name="Name">Name</string>
+    <string name="GoTo">Go to Table</string>
+    <string name="Cashier">Cashier</string>
+    <string name="Logout">Logout</string>
+    <string name="Register">Register</string>
+    <string name="LeaveSeat">Leave Seat</string>
+    <string name="Username">Username</string>
+    <string name="RegHint">Enter a Username on Register</string>
+    <string name="PostBlind">Post Blind</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+</resources>

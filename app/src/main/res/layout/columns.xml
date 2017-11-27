@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="@string/Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3"
+            android:layout_weight="1"
+            android:textAlignment="center" />
+
+        <TextView
+            android:text="@string/Game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView5"
+            android:layout_weight="1"
+            android:textAlignment="center" />
+
+        <TextView
+            android:text="@string/Stakes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4"
+            android:layout_weight="1"
+            android:textAlignment="center" />
+
+        <TextView
+            android:text="@string/Players"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView6"
+            android:layout_weight="1.17"
+            android:layout_width="35dp"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:id="@+id/Table"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/Game"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/Stakes"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/Players"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+</FrameLayout>

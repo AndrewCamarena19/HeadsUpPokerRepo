@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_hold_em_table"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    tools:context="com.andyisdope.headsuppoker.Table">
+
+    <FrameLayout
+        android:id="@+id/ChatSpace"
+        android:layout_width="250dp"
+        android:layout_height="65dp">
+
+        <TextView
+            android:layout_width="250dp"
+            android:id="@+id/MessageHistory"
+            tools:maxLines="15"
+            android:scrollbars="vertical"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:verticalScrollbarPosition="left" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/ButtonSpace"
+        android:layout_gravity="bottom"
+        android:layout_height="50dp">
+
+        <Button
+            android:text="@string/Check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BtnCheck" />
+
+        <Button
+            android:text="@string/Bet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BtnBet"
+            android:layout_marginStart="200dp" />
+
+        <Button
+            android:text="@string/Fold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BtnFold" />
+
+        <Button
+            android:text="@string/Raise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/BtnRaise"
+            android:layout_marginStart="200dp" />
+
+        <FrameLayout
+            android:layout_height="match_parent"
+            android:layout_marginStart="310dp"
+            android:id="@+id/SliderBetSpace"
+            android:layout_width="280dp">
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/BetSlider"
+                android:layout_marginStart="75dp"
+                android:max="100000" />
+
+            <EditText
+                android:layout_width="78dp"
+                android:layout_height="match_parent"
+                android:inputType="numberDecimal"
+                android:ems="10"
+                android:id="@+id/BetText"
+                android:hint="@string/BetAmount"
+                android:textSize="12sp"
+                android:textAlignment="viewStart" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/BtnCall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:text="@string/Call"
+            android:textSize="12sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/InfoSpace"
+        android:layout_marginStart="250dp"
+        android:layout_width="250dp"
+        android:layout_height="65dp">
+
+        <TextView
+            android:layout_height="match_parent"
+            android:id="@+id/TableInfo"
+            android:layout_width="155dp"
+            android:gravity="center" />
+
+        <Button
+            android:text="@string/LeaveSeat"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/LeaveSeat"
+            android:layout_marginStart="155dp" />
+
+        <Button
+            android:text="@string/TakeSeat"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/TakeSeat"
+            android:layout_marginStart="155dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/RoomText" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/RoomDeets"
+            android:layout_marginTop="15dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/StakesText"
+            android:layout_marginTop="30dp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_marginStart="500dp"
+        android:layout_width="93dp"
+        android:id="@+id/MenuSpace"
+        android:layout_height="65dp">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:id="@+id/TableSpace"
+        android:layout_marginTop="65dp"
+        android:layout_height="245dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/blackjackfelt">
+
+            <FrameLayout
+                android:id="@+id/SeatTwo"
+                android:layout_alignTop="@+id/CardStreets"
+                android:layout_toStartOf="@+id/CardStreets"
+                android:layout_marginEnd="25dp"
+                android:layout_width="125dp"
+                android:layout_height="100dp">
+
+                <ImageView
+                    android:id="@+id/Seat2Card2"
+                    android:layout_width="75dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="15dp"
+                    android:contentDescription="@string/Card" />
+
+                <ImageView
+                    android:id="@+id/Seat2Card1"
+                    android:layout_width="75dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="40dp"
+                    android:contentDescription="@string/Card" />
+
+                <FrameLayout
+                    android:id="@+id/Seat2"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="35dp">
+
+                    <TextView
+                        android:id="@+id/Seat2Name"
+                        android:layout_width="match_parent"
+                        android:layout_height="33dp"
+                        android:background="@color/OpaqueBlack"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/background_light"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/Seat2ChipAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="33dp"
+                        android:background="@color/OpaqueBlack"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/background_light"
+                        android:textSize="18sp" />
+                </FrameLayout>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/SeatOne"
+                android:layout_marginStart="25dp"
+                android:layout_alignTop="@+id/CardStreets"
+                android:layout_toEndOf="@+id/CardStreets"
+                android:layout_width="125dp"
+                android:layout_height="100dp">
+
+                <ImageView
+                    android:id="@+id/Seat1Card2"
+                    android:layout_width="75dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="15dp"
+                    android:contentDescription="@string/Card" />
+
+                <ImageView
+                    android:id="@+id/Seat1Card1"
+                    android:layout_width="75dp"
+                    android:layout_height="80dp"
+                    android:layout_marginStart="40dp"
+                    android:contentDescription="@string/Card" />
+
+                <FrameLayout
+                    android:id="@+id/Seat1"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="35dp">
+
+                    <TextView
+                        android:id="@+id/Seat1Name"
+                        android:layout_width="match_parent"
+                        android:layout_height="33dp"
+                        android:background="@color/OpaqueBlack"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/background_light"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/Seat1ChipAction"
+                        android:layout_width="match_parent"
+                        android:layout_height="33dp"
+                        android:layout_marginTop="33dp"
+                        android:background="@color/OpaqueBlack"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/background_light"
+                        android:textSize="18sp" />
+
+                </FrameLayout>
+
+            </FrameLayout>
+
+            <EditText
+                android:layout_width="238dp"
+                android:inputType="text"
+                android:id="@+id/MessageBox"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewStart"
+                android:imeOptions="actionDone|flagNoExtractUi"
+                android:textSize="12sp"
+                android:hint="@string/Message"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true">
+
+            </EditText>
+
+            <LinearLayout
+                android:id="@+id/CardStreets"
+                android:layout_width="275dp"
+                android:layout_height="80dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/Flop1"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight=".2"
+                    android:contentDescription="@string/Card" />
+
+                <ImageView
+                    android:id="@+id/Flop2"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight=".2"
+                    android:contentDescription="@string/Card" />
+
+                <ImageView
+                    android:id="@+id/Flop3"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight=".2"
+                    android:contentDescription="@string/Card" />
+
+                <ImageView
+                    android:id="@+id/Turn"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight=".2"
+                    android:contentDescription="@string/Card" />
+
+                <ImageView
+                    android:id="@+id/River"
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight=".2"
+                    android:contentDescription="@string/Card" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/CardStreets"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="14dp"
+                android:id="@+id/Pot"
+                android:background="@color/OpaqueBlack"
+                android:textColor="@android:color/background_light" />
+
+            <ImageView
+                android:id="@+id/Seat1Dealer"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_above="@+id/SeatOne"
+                android:layout_toEndOf="@+id/CardStreets"
+                android:contentDescription="@string/Card"
+                android:visibility="invisible"
+                app:srcCompat="@mipmap/dealerbtn" />
+
+            <ImageView
+                android:id="@+id/Seat2Dealer"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_above="@+id/SeatTwo"
+                android:layout_toStartOf="@+id/CardStreets"
+                android:contentDescription="@string/Card"
+                android:visibility="invisible"
+                app:srcCompat="@mipmap/dealerbtn" />
+
+            <Button
+                android:id="@+id/PostBlindBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:elevation="0dp"
+                android:text="@string/PostBlind"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/HandStrength"
+                android:layout_width="125dp"
+                android:layout_height="25dp"
+                android:layout_alignEnd="@+id/SeatOne"
+                android:layout_alignStart="@+id/SeatOne"
+                android:layout_below="@+id/SeatOne" />
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</FrameLayout>
