@@ -1,5 +1,7 @@
 package com.andyisdope.headsuppoker;
 
+import java.util.Objects;
+
 /**
  * Created by Andy on 9/12/2017.
  */
@@ -46,8 +48,25 @@ public class Card {
         return Suit + Rank;
     }
 
-    public boolean isCard(Card check) {
-        return (this.Rank == check.Rank && this.Suit.equals(check.Suit));
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+
+        Card chk = (Card) obj;
+        return (Objects.equals(this.Rank, chk.Rank) && this.Suit.equals(chk.Suit));
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.Rank);
+        hash = 67 * hash + Objects.hashCode(this.Suit);
+        return hash;
     }
 
 }
