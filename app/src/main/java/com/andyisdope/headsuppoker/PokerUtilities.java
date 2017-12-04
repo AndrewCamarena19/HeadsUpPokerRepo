@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
+
 
 /**
  * Created by Andy on 11/28/2017.
@@ -34,6 +34,26 @@ public class PokerUtilities {
                 @Override
                 public void run() {
                     Seat2Name.setText(Player.getUsername());
+                }
+            }, 2000);
+        }
+    }
+
+    static void SetActionLabelVillian(String act, final TextView Seat2Name, final TextView Seat1Name, String Seat, final String Villian) {
+        if (Seat.equals("Seat1")) {
+            Seat1Name.setText(act);
+            Seat1Name.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Seat1Name.setText(Villian);
+                }
+            }, 2000);
+        } else {
+            Seat2Name.setText(act);
+            Seat2Name.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Seat2Name.setText(Villian);
                 }
             }, 2000);
         }
