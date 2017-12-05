@@ -1,6 +1,7 @@
 package com.andyisdope.headsuppoker;
 
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -59,37 +60,44 @@ public class PokerUtilities {
         }
     }
 
-    public static void CheckWinner(PokerHand Seat1, PokerHand Seat2, TextView Pot) {
+    public static int CheckWinner(PokerHand Seat1, PokerHand Seat2, TextView Pot) {
         Seat1.CalculateHand();
         Seat2.CalculateHand();
         if (Seat1.getHandStrength() > Seat2.getHandStrength()) {
-            Pot.setText("Seat 1 is winner");
+            Pot.setText("Seat 1 Wins");
+            return 1;
         } else if (Seat1.getHandStrength() < Seat2.getHandStrength()) {
-            Pot.setText("Seat 2 is winner");
+            Pot.setText("Seat 2 Wins");
+            return 2;
         } else {
             //easy check for first card
-            if (Seat1.getCard(0).getRank() > Seat2.getCard(0).getRank())
-                Pot.setText("Seat1 Wins");
-            else if (Seat1.getCard(0).getRank() < Seat2.getCard(0).getRank())
-                Pot.setText("Seat2 Wins");
-            else {
+            if (Seat1.getCard(0).getRank() > Seat2.getCard(0).getRank()) {
+                Pot.setText("Seat 1 Wins");
+                return 1;
+            } else if (Seat1.getCard(0).getRank() < Seat2.getCard(0).getRank()) {
+                Pot.setText("Seat 2 Wins");
+                return 2;
+            } else {
                 //may need to check all cards
                 int count = 1;
                 boolean done = false;
                 while (count < 5 && !done) {
                     if (Seat1.getCard(count).getRank() > Seat2.getCard(count).getRank()) {
-                        Pot.setText("Seat 1 wins");
-                        done = true;
+                        Pot.setText("Seat 1 Wins");
+                        return 1;
                     } else if (Seat1.getCard(count).getRank() < Seat2.getCard(count).getRank()) {
-                        Pot.setText("Seat 2 wins");
-                        done = true;
+                        Pot.setText("Seat 2 Wins");
+                        return 2;
                     } else
                         count++;
                 }
-                if (!done)
+                if (!done) {
                     Pot.setText("Split Pot");
+                    return 0;
+                }
             }
         }
+        return -1;
     }
 
     private static void CheckEquity(PokerHand Seat1, PokerHand Seat2) {
@@ -101,11 +109,10 @@ public class PokerUtilities {
 
         } else {
             //easy check for first card
-            if (Seat1.getCard(0).getRank() > Seat2.getCard(0).getRank())
-            {wins++;}
-            else if(Seat1.getCard(0).getRank() < Seat2.getCard(0).getRank())
-            {}
-            else {
+            if (Seat1.getCard(0).getRank() > Seat2.getCard(0).getRank()) {
+                wins++;
+            } else if (Seat1.getCard(0).getRank() < Seat2.getCard(0).getRank()) {
+            } else {
                 //may need to check all cards
                 int count = 1;
                 boolean done = false;
@@ -119,8 +126,8 @@ public class PokerUtilities {
                     } else
                         count++;
                 }
-                if (!done)
-                {}
+                if (!done) {
+                }
             }
         }
     }
@@ -133,20 +140,19 @@ public class PokerUtilities {
         for (int i = 0; i < Suits.size(); i++) {
             for (int k = 1; k < 14; k++) {
                 Card toAdd = new Card(k, Suits.get(i));
-                if(!CardsHand.contains(toAdd))
+                if (!CardsHand.contains(toAdd))
                     Deck.add(toAdd);
             }
         }
         double totalhands = 0;
         Collections.shuffle(Deck);
-        for(int i = 0; i < Deck.size(); i++)
-            for(int k = i+1 ; k < Deck.size(); k++)
-                for(int j = k+1; j < Deck.size(); j++)
-                    for(int l = j+1; l < Deck.size(); l++)
-                        for(int m = l+1; m < Deck.size(); m++)
-                        {
+        for (int i = 0; i < Deck.size(); i++)
+            for (int k = i + 1; k < Deck.size(); k++)
+                for (int j = k + 1; j < Deck.size(); j++)
+                    for (int l = j + 1; l < Deck.size(); l++)
+                        for (int m = l + 1; m < Deck.size(); m++) {
                             PokerHand me2 = new PokerHand();
-                            for(Card c : Seat1.getHand())
+                            for (Card c : Seat1.getHand())
                                 me2.addCard(c);
                             me2.addCard(Deck.get(i));
                             me2.addCard(Deck.get(j));
@@ -154,19 +160,19 @@ public class PokerUtilities {
                             me2.addCard(Deck.get(l));
                             me2.addCard(Deck.get(m));
                             PokerHand opp2 = new PokerHand();
-                            for(Card c : Seat2.getHand())
+                            for (Card c : Seat2.getHand())
                                 opp2.addCard(c);
                             opp2.addCard(Deck.get(i));
                             opp2.addCard(Deck.get(j));
                             opp2.addCard(Deck.get(k));
                             opp2.addCard(Deck.get(l));
                             opp2.addCard(Deck.get(m));
-                            CheckEquity(me2,opp2);
+                            CheckEquity(me2, opp2);
                             totalhands++;
                         }
 
-        double percent = wins/totalhands;
-        return (percent*100);
+        double percent = wins / totalhands;
+        return (percent * 100);
     }
 }
 
