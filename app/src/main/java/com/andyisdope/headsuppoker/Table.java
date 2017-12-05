@@ -44,10 +44,10 @@ public class Table extends AppCompatActivity {
     private ArrayList<FrameLayout> SeatCards;
     private ArrayList<ImageView> Streets;
     private FirebaseDatabase mRef = FirebaseDatabase.getInstance();
-    private DatabaseReference CurrentStreet, Message, Players, Board, Seat1Ref, Seat2Ref, SeatCardsRef, Button, BlindsRef, NumRef, PotRef, Ongoing, ActionSeat;
+    private DatabaseReference  Message, Players,Seat1Ref, Seat2Ref, SeatCardsRef, Button, BlindsRef, NumRef, PotRef, Ongoing, ActionSeat, BoardStreet;
     private TextView Seat1Name, Seat1Chips, TableText, HandStrength, Seat2Name, Seat2Chips, Pot, RoomDeets, StakesText, MessageHistory;
-    private String[] Seat1CardImages = new String[2];
-    private String[] Seat2CardImages = new String[2];
+    private String[] Seat1Card = new String[2];
+    private String[] Seat2Card = new String[2];
     private String[] Seat1 = new String[2];
     private String[] Seat2 = new String[2];
     private String[] Blinds = new String[2];
@@ -55,12 +55,13 @@ public class Table extends AppCompatActivity {
     private String[] BoardCards = new String[5];
     private ArrayList<String> Suits = new ArrayList<>(Arrays.asList("c", "s", "h", "d"));
     private ArrayList<Card> Deck = new ArrayList<>();
-    private ArrayList<Card> BoardCheck = new ArrayList<>();
     private Player Player;
     private int numPlayers;
     private Double Min, Max, CurrentPot, SmallBlind, BigBlind;
     private String TableName, CurrStreet, VillianName;
     private boolean inHand, AllIn;
+    private PokerHand S1, S2;
+
 
 
     @Override
@@ -99,7 +100,6 @@ public class Table extends AppCompatActivity {
 
     private void getReferences() {
         Message = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/Message");
-        Board = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/Board");
         BlindsRef = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/Blinds");
         Seat1Ref = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/Seat1");
         Seat2Ref = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/Seat2");
@@ -109,8 +109,8 @@ public class Table extends AppCompatActivity {
         Players = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Users/" + Player.getUID());
         NumRef = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/Players");
         PotRef = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/Pot");
-        CurrentStreet = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/Andy's Room/CurrentStreet");
         ActionSeat = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/ActionSeat");
+        BoardStreet = mRef.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables/" + TableName + "/BoardStreet");
         SetListeners();
     }
 
@@ -321,21 +321,23 @@ public class Table extends AppCompatActivity {
 
     private void SetListeners() {
 
-        CurrentStreet.addValueEventListener(new ValueEventListener() {
+        BoardStreet.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue().toString().equals("Flop")) {
+                String[] BoardCards;
+                BoardCards = dataSnapshot.child("Board").getValue().toString().split(",");
+                if (dataSnapshot.child("Street").getValue().toString().equals("Flop")) {
                     AddCardDisplay(Streets.get(0), BoardCards[0]);
                     AddCardDisplay(Streets.get(1), BoardCards[1]);
                     AddCardDisplay(Streets.get(2), BoardCards[2]);
-                } else if (dataSnapshot.getValue().toString().equals("Turn")) {
+                } else if (dataSnapshot.child("Street").getValue().toString().equals("Turn")) {
                     AddCardDisplay(Streets.get(3), BoardCards[3]);
-                } else if (dataSnapshot.getValue().toString().equals("River")) {
+                } else if (dataSnapshot.child("Street").getValue().toString().equals("River")) {
                     AddCardDisplay(Streets.get(4), BoardCards[4]);
-                } else if (dataSnapshot.getValue().toString().equals("ShowDown")) {
+                } else if (dataSnapshot.child("Street").getValue().toString().equals("ShowDown")) {
+                    ShowDown();
                     ResetCards();
                 }
-
             }
 
             @Override
@@ -348,7 +350,7 @@ public class Table extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 action = dataSnapshot.getValue().toString().split(",");
-                if (!Player.getSeat().equals(action[0]) && action.length > 1) {
+                if (!Player.getSeat().equals(action[0]) && action.length > 1 && !Player.getSeat().equals("NoSeat")) {
                     if (action[1].equals("Bet") || action[1].equals("Raise")) {
                         SetBetButtons();
                         Call.setText("Call " + action[2]);
@@ -455,7 +457,6 @@ public class Table extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Pot.setText(String.format("Pot : $ %.2f", Double.parseDouble(dataSnapshot.getValue().toString())));
                 CurrentPot = Double.parseDouble(dataSnapshot.getValue().toString());
-
             }
 
             @Override
@@ -485,18 +486,6 @@ public class Table extends AppCompatActivity {
                     MessageHistory.append(dataSnapshot.getValue().toString() + "\n");
                     setBottom();
                 }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        Board.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                BoardCards = dataSnapshot.getValue().toString().split(",");
             }
 
             @Override
@@ -736,15 +725,15 @@ public class Table extends AppCompatActivity {
     }
 
     private void StartHand() {
-        BlindsRef.child("Big").setValue(false);
-        BlindsRef.child("Small").setValue(false);
-        Ongoing.setValue(true);
         if (Player.getDealer()) {
+            BlindsRef.child("Big").setValue(false);
+            BlindsRef.child("Small").setValue(false);
+            Ongoing.setValue(true);
             SendMessage("Starting Hand");
             ShuffleDeck();
             SetBetButtons();
-            CurrentStreet.setValue("Pre");
-        } else {
+            BoardStreet.child("Street").setValue("Pre");
+        } else if(!Player.getSeat().equals("NoSeat")){
 
             ActionSeat.setValue(Player.getSeat() + ",Bet," + BigBlind);
         }
@@ -779,8 +768,9 @@ public class Table extends AppCompatActivity {
         }
         Collections.shuffle(Deck);
         SeatCardsRef.child("Seat1").setValue(Deck.get(0).toString() + "," + Deck.get(1).toString());
+
         SeatCardsRef.child("Seat2").setValue(Deck.get(2).toString() + "," + Deck.get(3).toString());
-        Board.setValue(Deck.get(4).toString() + "," + Deck.get(5).toString() + "," + Deck.get(6).toString() + "," + Deck.get(7).toString() + "," + Deck.get(8).toString() + ",");
+        BoardStreet.child("Board").setValue(Deck.get(4).toString() + "," + Deck.get(5).toString() + "," + Deck.get(6).toString() + "," + Deck.get(7).toString() + "," + Deck.get(8).toString() + ",");
     }
 
     private void SendMessage(String message) {
@@ -792,27 +782,42 @@ public class Table extends AppCompatActivity {
         switch (CurrStreet) {
             case "Pre":
                 CurrStreet = "Flop";
+                if(AllIn)
+                {}
                 break;
             case "Flop":
                 CurrStreet = "Turn";
+                if(AllIn)
+                {}
                 break;
             case "Turn":
                 CurrStreet = "River";
+                if(AllIn)
+                {}
                 break;
             case "River":
                 CurrStreet = "ShowDown";
+                if(AllIn)
+                {}
                 break;
             case "ShowDown":
                 ShowDown();
                 break;
         }
-        CurrentStreet.setValue(CurrStreet);
+        BoardStreet.child("Street").setValue(CurrStreet);
     }
 
     private void RunOutBoard() {
+        while(!CurrStreet.equals("ShowDown"))
+        {
+            NextStreet();
+        }
     }
 
     private void ShowDown() {
+        if(Player.getDealer()) {
+            EndHand();
+        }
     }
 
     private void EndHand() {
@@ -828,12 +833,15 @@ public class Table extends AppCompatActivity {
         }
         Player.setDealer(!Player.getDealer());
         SetOffButtons();
-        Board.setValue("NA,NA,NA,NA,NA");
+        BoardStreet.child("Board").setValue("NA,NA,NA,NA,NA");
         SeatCardsRef.child("Seat1").setValue("NA,NA");
         SeatCardsRef.child("Seat2").setValue("NA,NA");
-        CurrentStreet.setValue("empty");
+        BoardStreet.child("Street").setValue("empty");
     }
 
-    //TODO start preflop bet phases with ActionSeat field
-    //TODO implement name action seat delay runnable for opponent side
+    //TODO implement hand replay
+    //TODO Test street Progression with two phones
+    //TODO create pokerhands to call checkwinner in showdown
+    //TODO finish nextstreet function
+    //TODO generate hand equities without simulation
 }
