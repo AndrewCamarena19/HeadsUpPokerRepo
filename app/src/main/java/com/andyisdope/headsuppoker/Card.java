@@ -22,6 +22,16 @@ public class Card {
         }
     }
 
+    public Card(char rank, char suit) {
+        Rank = Integer.parseInt(String.valueOf(rank));
+        Suit = String.valueOf(suit);
+        if (Suit.equals("Clubs") || Suit.equals("Spades")) {
+            Color = "Black";
+        } else {
+            Color = "Red";
+        }
+    }
+
     public Integer getRank() {
         return Rank;
     }
