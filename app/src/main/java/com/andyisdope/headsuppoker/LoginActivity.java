@@ -21,11 +21,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("ALL")
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private Button SignIn, Register;
     private EditText Email, Password;
     private FirebaseUser user;
     private FirebaseDatabase fdb;
@@ -45,18 +45,18 @@ public class LoginActivity extends AppCompatActivity {
         Email = (EditText) findViewById(R.id.EmailText);
         intent = new Intent(getBaseContext(), RoomLobby.class);
         Password = (EditText) findViewById(R.id.PasswordText);
-        SignIn = (Button) findViewById(R.id.SignIn);
+        Button signIn = (Button) findViewById(R.id.SignIn);
         fdb = FirebaseDatabase.getInstance();
         UserID = (EditText) findViewById(R.id.UserText);
-        SignIn.setOnClickListener(new View.OnClickListener() {
+        signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Signin(Email.getText().toString(), Password.getText().toString());
             }
         });
-        Register = (Button) findViewById(R.id.Register);
-        Register.setOnClickListener(new View.OnClickListener() {
+        Button register = (Button) findViewById(R.id.Register);
+        register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!UserID.getText().toString().equals("") || !Password.getText().toString().equals("") || !Email.getText().toString().equals(""))
@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    void Signin(String email, String password) {
+    private void Signin(String email, String password) {
         LoginActivity = findViewById(R.id.activity_login);
         ShowProgressView = findViewById(R.id.login_progress);
         ShowProgress.showProgress(true, LoginActivity, ShowProgressView);
@@ -108,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    void CreateUser(String email, String password) {
+    private void CreateUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (!task.isSuccessful()) {
                             Toast.makeText(getBaseContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
                         } else {
-                            Map<String, String> map = new HashMap();
+                            Map<String, String> map = new HashMap<>();
                             UserTable = fdb.getReference().child("Users").child(user.getUid());
                             map.put("BankRoll", 10000.0 + "");
                             map.put("Username", UserID.getText().toString());

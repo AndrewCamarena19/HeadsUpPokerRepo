@@ -1,11 +1,11 @@
 package com.andyisdope.headsuppoker;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -33,9 +33,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Random;
 
 
+@SuppressWarnings("ALL")
 public class Table extends AppCompatActivity {
 
     private SeekBar SeekBet;
@@ -44,18 +46,23 @@ public class Table extends AppCompatActivity {
     private ImageView Dealer1, Dealer2;
     private ArrayList<FrameLayout> SeatCards;
     private ArrayList<ImageView> Streets;
-    private FirebaseDatabase mRef = FirebaseDatabase.getInstance();
+    private final FirebaseDatabase mRef = FirebaseDatabase.getInstance();
     private DatabaseReference Message, Players, Seat1Ref, Seat2Ref, SeatCardsRef, Button, BlindsRef, NumRef, PotRef, Ongoing, ActionSeat, BoardStreet;
-    private TextView Seat1Name, Seat1Chips, TableText, HandStrength, Seat2Name, Seat2Chips, Pot, RoomDeets, StakesText, MessageHistory;
-    private String[] Seat1Card = new String[2];
-    private String[] Seat2Card = new String[2];
+    private TextView Seat1Name;
+    private TextView Seat1Chips;
+    private TextView TableText;
+    private TextView Seat2Name;
+    private TextView Seat2Chips;
+    private TextView Pot;
+    private TextView RoomDeets;
+    private TextView StakesText;
+    private TextView MessageHistory;
     private String[] Seat1 = new String[2];
     private String[] Seat2 = new String[2];
     private String[] Blinds = new String[2];
     private String[] action = new String[3];
-    private String[] BoardCards = new String[5];
-    private ArrayList<String> Suits = new ArrayList<>(Arrays.asList("c", "s", "h", "d"));
-    private ArrayList<Card> Deck = new ArrayList<>();
+    private final ArrayList<String> Suits = new ArrayList<>(Arrays.asList("c", "s", "h", "d"));
+    private final ArrayList<Card> Deck = new ArrayList<>();
     private Player Player;
     private int numPlayers;
     private Double Min, Max, CurrentPot, SmallBlind, BigBlind;
@@ -133,7 +140,7 @@ public class Table extends AppCompatActivity {
                     //Player.setAllin(true);
                     Player.removeFromStack(currbet);
                     CurrentPot += currbet;
-                    Pot.setText("$ " + CurrentPot);
+                    Pot.setText(getString(R.string.PotDisplay, CurrentPot));
                     PokerUtilities.SetActionLabel("All In: " + currbet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
                     PotRef.setValue(CurrentPot);
                     ActionSeat.setValue(Player.getSeat() + ",AllIn," + currbet);
@@ -142,7 +149,7 @@ public class Table extends AppCompatActivity {
                 } else if (currbet >= 2 * Double.parseDouble(action[2])) {
                     Player.removeFromStack(currbet);
                     CurrentPot += currbet;
-                    Pot.setText("$ " + CurrentPot);
+                    Pot.setText(getString(R.string.PotDisplay, CurrentPot));
                     PokerUtilities.SetActionLabel("Raise: " + currbet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
                     PotRef.setValue(CurrentPot);
                     ActionSeat.setValue(Player.getSeat() + ",Raise," + currbet);
@@ -161,13 +168,13 @@ public class Table extends AppCompatActivity {
                 CurrentPot += (currbet);
                 if (currbet == Player.getStack()) {
                     //Player.setAllin(true);
-                    Pot.setText("$ " + CurrentPot);
+                    Pot.setText(getString(R.string.PotDisplay, CurrentPot));
                     PokerUtilities.SetActionLabel("All In: " + currbet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
                     PotRef.setValue(CurrentPot);
                     ActionSeat.setValue(Player.getSeat() + ",AllIn," + currbet);
                     BetAmount.setText("");
                 } else {
-                    Pot.setText("$ " + CurrentPot);
+                    Pot.setText(getString(R.string.PotDisplay, CurrentPot));
                     PokerUtilities.SetActionLabel("Bet: " + currbet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
                     PotRef.setValue(CurrentPot);
                     ActionSeat.setValue(Player.getSeat() + ",Bet," + currbet);
@@ -212,7 +219,7 @@ public class Table extends AppCompatActivity {
                 Double currbet = Double.parseDouble(action[2]);
                 Player.removeFromStack(currbet);
                 CurrentPot += currbet;
-                Pot.setText("$ " + CurrentPot);
+                Pot.setText(getString(R.string.PotDisplay, CurrentPot));
                 PokerUtilities.SetActionLabel("Call: " + currbet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
                 PotRef.setValue(CurrentPot);
                 ActionSeat.setValue(Player.getSeat() + ",Call," + currbet);
@@ -277,10 +284,11 @@ public class Table extends AppCompatActivity {
         SeekBet.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             double bet;
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 bet = i / 100000.0;
-                BetAmount.setText(String.format("%.2f", bet * Player.getStack()) + "");
+                BetAmount.setText(String.format(Locale.ENGLISH,"%.2f", bet * Player.getStack()) + "");
             }
 
             @Override
@@ -288,9 +296,10 @@ public class Table extends AppCompatActivity {
 
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                BetAmount.setText(String.format("%.2f", bet * Player.getStack()) + "");
+                BetAmount.setText(String.format(Locale.ENGLISH,"%.2f", bet * Player.getStack()) + "");
             }
         });
 
@@ -324,23 +333,29 @@ public class Table extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String[] BoardCards;
+                CurrStreet = dataSnapshot.child("Street").getValue().toString();
                 BoardCards = dataSnapshot.child("Board").getValue().toString().split(",");
-                if (dataSnapshot.child("Street").getValue().toString().equals("Flop")) {
-                    AddCardDisplay(Streets.get(0), BoardCards[0]);
-                    AddCardDisplay(Streets.get(1), BoardCards[1]);
-                    AddCardDisplay(Streets.get(2), BoardCards[2]);
-                } else if (dataSnapshot.child("Street").getValue().toString().equals("Turn")) {
-                    AddCardDisplay(Streets.get(3), BoardCards[3]);
-                } else if (dataSnapshot.child("Street").getValue().toString().equals("River")) {
-                    AddCardDisplay(Streets.get(4), BoardCards[4]);
-                } else if (dataSnapshot.child("Street").getValue().toString().equals("ShowDown")) {
-                    for (String x : BoardCards) {
-                        Card toAdd = new Card(x.charAt(1), x.charAt(0));
-                        S1.addCard(toAdd);
-                        S2.addCard(toAdd);
-                    }
-                    ShowDown();
-                    ResetCards();
+                switch (CurrStreet) {
+                    case "Flop":
+                        AddCardDisplay(Streets.get(0), BoardCards[0]);
+                        AddCardDisplay(Streets.get(1), BoardCards[1]);
+                        AddCardDisplay(Streets.get(2), BoardCards[2]);
+                        break;
+                    case "Turn":
+                        AddCardDisplay(Streets.get(3), BoardCards[3]);
+                        break;
+                    case "River":
+                        AddCardDisplay(Streets.get(4), BoardCards[4]);
+                        break;
+                    case "ShowDown":
+                        for (String x : BoardCards) {
+                            Card toAdd = new Card(x.charAt(1), x.charAt(0));
+                            S1.addCard(toAdd);
+                            S2.addCard(toAdd);
+                        }
+                        ShowDown();
+                        ResetCards();
+                        break;
                 }
             }
 
@@ -351,6 +366,7 @@ public class Table extends AppCompatActivity {
         });
 
         ActionSeat.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 action = dataSnapshot.getValue().toString().split(",");
@@ -390,6 +406,7 @@ public class Table extends AppCompatActivity {
         });
 
         Seat1Ref.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.getValue().toString().equals("empty")) {
@@ -409,6 +426,7 @@ public class Table extends AppCompatActivity {
         });
 
         Seat2Ref.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.getValue().toString().equals("empty")) {
@@ -454,7 +472,7 @@ public class Table extends AppCompatActivity {
         PotRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Pot.setText(String.format("Pot : $ %.2f", Double.parseDouble(dataSnapshot.getValue().toString())));
+                Pot.setText(String.format(Locale.ENGLISH,"Pot : $ %.2f", Double.parseDouble(dataSnapshot.getValue().toString())));
                 CurrentPot = Double.parseDouble(dataSnapshot.getValue().toString());
             }
 
@@ -587,7 +605,7 @@ public class Table extends AppCompatActivity {
         StakesText = (TextView) findViewById(R.id.StakesText);
         Pot = (TextView) findViewById(R.id.Pot);
         RoomDeets = (TextView) findViewById(R.id.RoomDeets);
-        HandStrength = (TextView) findViewById(R.id.HandStrength);
+        TextView handStrength = (TextView) findViewById(R.id.HandStrength);
         Seat1Name = (TextView) findViewById(R.id.Seat1Name);
         Seat1Chips = (TextView) findViewById(R.id.Seat1ChipAction);
         Seat2Name = (TextView) findViewById(R.id.Seat2Name);
@@ -676,6 +694,7 @@ public class Table extends AppCompatActivity {
         alert.show();
     }
 
+    @SuppressLint("SetTextI18n")
     private void PostBlind() {
         if (Player.getDealer()) {
             Player.removeFromStack(SmallBlind);

@@ -1,5 +1,6 @@
 package com.andyisdope.headsuppoker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,20 +24,28 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@SuppressWarnings("ALL")
 public class RoomLobby extends AppCompatActivity {
 
     private ListView Cash, Tournament;
-    private TabHost Tabs;
     private ArrayList<HashMap<String, String>> CashGames;
     private ArrayList<HashMap<String, String>> Tournaments;
-    private FirebaseDatabase FB = FirebaseDatabase.getInstance();
-    private DatabaseReference CashDB = FB.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables");
-    private DatabaseReference TourDB = FB.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Tournaments");
-    private DatabaseReference PlayerDB;
+    private final FirebaseDatabase FB = FirebaseDatabase.getInstance();
+    private final DatabaseReference CashDB = FB.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Cash Games/Tables");
+    private final DatabaseReference TourDB = FB.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Tables/Tournaments");
     private DatabaseReference BankrollDB;
-    private HashMap<String, String> Cgames = new HashMap();
-    private TextView RoomName, Game, Stakes, PlayerStacks, Min, Levels, Starting, Prize, BankRollText, PlayerNameText;
-    private Button Register, GoRoom, Cashier;
+    private HashMap<String, String> Cgames = new HashMap<>();
+    private TextView Game;
+    private TextView Stakes;
+    private TextView PlayerStacks;
+    private TextView Min;
+    private TextView Levels;
+    private TextView Starting;
+    private TextView Prize;
+    private TextView BankRollText;
+    private TextView PlayerNameText;
+    private Button Register;
+    private Button GoRoom;
     private Player player;
     private Activity Current;
     private String TableName;
@@ -76,14 +85,14 @@ public class RoomLobby extends AppCompatActivity {
                 startActivity(nIntent);
             }
         });
-        Cashier = (Button) findViewById(R.id.Cashier);
-        Cashier.setOnClickListener(new View.OnClickListener() {
+        Button cashier = (Button) findViewById(R.id.Cashier);
+        cashier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Cashier dialog pop up with current chip count and refresh button
             }
         });
-        RoomName = (TextView) findViewById(R.id.RoomName);
+        TextView roomName = (TextView) findViewById(R.id.RoomName);
         BankRollText = (TextView) findViewById(R.id.BankrollText);
         PlayerNameText = (TextView) findViewById(R.id.PlayerNameText);
         Game = (TextView) findViewById(R.id.Game);
@@ -96,16 +105,16 @@ public class RoomLobby extends AppCompatActivity {
         Cash = (ListView) findViewById(R.id.CashGames);
         Tournament = (ListView) findViewById(R.id.Tournaments);
 
-        Tabs = (TabHost) findViewById(R.id.RoomList);
-        Tabs.setup();
-        TabHost.TabSpec spec = Tabs.newTabSpec("CashGames");
+        TabHost tabs = (TabHost) findViewById(R.id.RoomList);
+        tabs.setup();
+        TabHost.TabSpec spec = tabs.newTabSpec("CashGames");
         spec.setContent(R.id.CashGames);
         spec.setIndicator("CashGames");
-        Tabs.addTab(spec);
-        spec = Tabs.newTabSpec("Tournaments");
+        tabs.addTab(spec);
+        spec = tabs.newTabSpec("Tournaments");
         spec.setContent(R.id.Tournaments);
         spec.setIndicator("Tournaments");
-        Tabs.addTab(spec);
+        tabs.addTab(spec);
 
         Register.setVisibility(View.GONE);
         GoRoom.setVisibility(View.GONE);
@@ -116,13 +125,13 @@ public class RoomLobby extends AppCompatActivity {
         player = new Player(intent.getStringExtra("UID"));
         final Activity curr = currs;
         BankrollDB = FB.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Users/" + player.getUID() + "/BankRoll");
-        PlayerDB = FB.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Users/" + player.getUID());
-        PlayerDB.addValueEventListener(new ValueEventListener() {
+        DatabaseReference playerDB = FB.getReferenceFromUrl("https://ultra-mason-176521.firebaseio.com/Users/" + player.getUID());
+        playerDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 player.setUsername(dataSnapshot.child("Username").getValue().toString());
                 player.setBankroll(Double.parseDouble(dataSnapshot.child("BankRoll").getValue().toString()));
-                BankRollText.setText("Chip Bankroll: $ " + player.getBankroll());
+                BankRollText.setText(getString(R.string.ChipBankRoll, player.getBankroll()));
                 PlayerNameText.setText(player.getUsername());
             }
 
@@ -135,10 +144,10 @@ public class RoomLobby extends AppCompatActivity {
         TourDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Tournaments = new ArrayList();
+                Tournaments = new ArrayList<>();
                 for (DataSnapshot snaps : dataSnapshot.getChildren()) {
-                    Cgames = new HashMap();
-                    Cgames.put("Table", snaps.getKey().toString());
+                    Cgames = new HashMap<>();
+                    Cgames.put("Table", snaps.getKey());
                     for (DataSnapshot Table : snaps.getChildren()) {
                         Cgames.put(Table.getKey(), Table.getValue().toString());
                     }
@@ -158,10 +167,10 @@ public class RoomLobby extends AppCompatActivity {
         CashDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                CashGames = new ArrayList();
+                CashGames = new ArrayList<>();
                 for (DataSnapshot snaps : dataSnapshot.getChildren()) {
-                    Cgames = new HashMap();
-                    Cgames.put("Table", snaps.getKey().toString());
+                    Cgames = new HashMap<>();
+                    Cgames.put("Table", snaps.getKey());
                     for (DataSnapshot Table : snaps.getChildren()) {
                         Cgames.put(Table.getKey(), Table.getValue().toString());
                     }
@@ -206,17 +215,18 @@ public class RoomLobby extends AppCompatActivity {
         setContentView(R.layout.activity_room_lobby);
         InitDB(this);
         InitUI();
-        CashGames = new ArrayList();
-        Tournaments = new ArrayList();
+        CashGames = new ArrayList<>();
+        Tournaments = new ArrayList<>();
 
         Tournament.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 
-                Game.setText(Tournaments.get(position).get("Type") +": "+Tournaments.get(position).get("Game") );
+                Game.setText(Tournaments.get(position).get("Type") + ": " + Tournaments.get(position).get("Game"));
                 Stakes.setText("Blinds: $" + Tournaments.get(position).get("Stakes"));
                 PlayerStacks.setText(Tournaments.get(position).get("Seat1") + "\n" + Tournaments.get(position).get("Seat2"));
-                Min.setText("Buyin: $" + Tournaments.get(position).get("Min"));
+                Min.setText("Buy in: $" + Tournaments.get(position).get("Min"));
                 Levels.setText("Blind Levels: " + Tournaments.get(position).get("LevelTime"));
                 Starting.setText("Starting Stack: $" + Tournaments.get(position).get("Starting Stack"));
                 Prize.setText("Prize: " + Tournaments.get(position).get("Prize"));
@@ -229,6 +239,7 @@ public class RoomLobby extends AppCompatActivity {
 
 
         Cash.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 Game.setText(CashGames.get(position).get("Type") + ": " + CashGames.get(position).get("Game"));

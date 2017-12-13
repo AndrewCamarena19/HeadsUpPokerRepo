@@ -8,22 +8,23 @@ import java.util.Comparator;
  * Created by Andy on 9/12/2017.
  */
 
+@SuppressWarnings({"ALL", "DefaultFileTemplate"})
 public class Hand {
 
     private ArrayList<Card> Cards;
 
-    public Hand() {
-        Cards = new ArrayList();
+    Hand() {
+        Cards = new ArrayList<>();
     }
 
     public Hand(Card one, Card two)
     {
-        Cards = new ArrayList();
+        Cards = new ArrayList<>();
         Cards.add(one);
         Cards.add(two);
     }
 
-    public void addCard(Card card) {
+    void addCard(Card card) {
         Cards.add(card);
         Collections.sort(Cards, CardComparatorHigh);
     }
@@ -42,25 +43,25 @@ public class Hand {
         return Cards;
     }
 
-    public int HandSize() {
+    int HandSize() {
         return Cards.size();
     }
 
-    public void SetHand(Hand nh) {
-        Cards = new ArrayList();
+    void SetHand(Hand nh) {
+        Cards = new ArrayList<>();
         for (Card x : nh.getHand()) {
             addCard(x);
         }
     }
 
-    private Comparator<Card> CardComparatorHigh = new Comparator<Card>() {
+    private final Comparator<Card> CardComparatorHigh = new Comparator<Card>() {
         @Override
         public int compare(Card card, Card t1) {
             return t1.getRank().compareTo(card.getRank());
         }
     };
 
-    private Comparator<Card> CardComparatorLow = new Comparator<Card>() {
+    private final Comparator<Card> CardComparatorLow = new Comparator<Card>() {
         @Override
         public int compare(Card card, Card t1) {
             return card.getRank().compareTo(t1.getRank());

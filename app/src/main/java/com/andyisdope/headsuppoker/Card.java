@@ -6,10 +6,12 @@ import java.util.Objects;
  * Created by Andy on 9/12/2017.
  */
 
+@SuppressWarnings({"ALL", "DefaultFileTemplate"})
 public class Card {
 
     private final Integer Rank;
     private final String Suit;
+    @SuppressWarnings("unused")
     private final String Color;
 
     public Card(Integer rank, String suit) {

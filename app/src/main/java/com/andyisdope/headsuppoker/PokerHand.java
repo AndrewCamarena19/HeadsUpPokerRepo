@@ -1,7 +1,7 @@
 package com.andyisdope.headsuppoker;
 
-/**
- * Created by Andy on 9/12/2017.
+/*
+  Created by Andy on 9/12/2017.
  */
 
 import java.util.ArrayList;
@@ -10,7 +10,8 @@ import java.util.ArrayList;
  *
  * @author Andy
  */
-public class PokerHand extends Hand {
+@SuppressWarnings("ALL")
+class PokerHand extends Hand {
 
     private String FlushSuit;
     private int HandStrength;
@@ -42,15 +43,15 @@ public class PokerHand extends Hand {
         spades = 0;
     }
 
-    public boolean Flush() {
+    private boolean Flush() {
         return Flush;
     }
 
-    public String getFlushSuit() {
+    private String getFlushSuit() {
         return FlushSuit;
     }
 
-    public boolean canStraight() {
+    private boolean canStraight() {
         return Straight;
     }
 
@@ -312,7 +313,7 @@ public class PokerHand extends Hand {
     }
 
     private boolean hasPairs(int[] ranks) {
-        ArrayList<Integer> pairs = new ArrayList();
+        ArrayList<Integer> pairs = new ArrayList<>();
         Hand toRemove = new Hand();
         for (int i = 1; i < ranks.length; i++) {
             if (ranks[i] == 2) {

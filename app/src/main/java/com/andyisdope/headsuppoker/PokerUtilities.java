@@ -6,21 +6,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Locale;
 
 
 /**
  * Created by Andy on 11/28/2017.
  */
 
-public class PokerUtilities {
+@SuppressWarnings({"ALL", "DefaultFileTemplate"})
+class PokerUtilities {
 
     private static double wins = 0;
-    private static ArrayList<String> Suits = new ArrayList<>(Arrays.asList("c", "s", "h", "d"));
-    private static ArrayList<Card> Deck = new ArrayList<>();
+    private static final ArrayList<String> Suits = new ArrayList<>(Arrays.asList("c", "s", "h", "d"));
+    private static final ArrayList<Card> Deck = new ArrayList<>();
 
     static void SetActionLabel(String act, TextView Seat1Chips, TextView Seat2Chips, final TextView Seat2Name, final TextView Seat1Name, final Player Player) {
         if (Player.getSeat().equals("Seat1")) {
-            Seat1Chips.setText(String.format("%.2f", Player.getStack()) + "");
+            Seat1Chips.setText(String.format(Locale.ENGLISH,"%.2f ", Player.getStack()));
             Seat1Name.setText(act);
             Seat1Name.postDelayed(new Runnable() {
                 @Override
@@ -29,7 +31,7 @@ public class PokerUtilities {
                 }
             }, 2000);
         } else {
-            Seat2Chips.setText(String.format("%.2f", Player.getStack()) + "");
+            Seat2Chips.setText(String.format(Locale.ENGLISH,"%.2f ", Player.getStack()));
             Seat2Name.setText(act);
             Seat2Name.postDelayed(new Runnable() {
                 @Override
@@ -64,18 +66,18 @@ public class PokerUtilities {
         Seat1.CalculateHand();
         Seat2.CalculateHand();
         if (Seat1.getHandStrength() > Seat2.getHandStrength()) {
-            Pot.setText("Seat 1 Wins");
+            Pot.setText(R.string.Winner1);
             return 1;
         } else if (Seat1.getHandStrength() < Seat2.getHandStrength()) {
-            Pot.setText("Seat 2 Wins");
+            Pot.setText(R.string.Winner2);
             return 2;
         } else {
             //easy check for first card
             if (Seat1.getCard(0).getRank() > Seat2.getCard(0).getRank()) {
-                Pot.setText("Seat 1 Wins");
+                Pot.setText(R.string.Winner1);
                 return 1;
             } else if (Seat1.getCard(0).getRank() < Seat2.getCard(0).getRank()) {
-                Pot.setText("Seat 2 Wins");
+                Pot.setText(R.string.Winner2);
                 return 2;
             } else {
                 //may need to check all cards
@@ -83,16 +85,18 @@ public class PokerUtilities {
                 boolean done = false;
                 while (count < 5 && !done) {
                     if (Seat1.getCard(count).getRank() > Seat2.getCard(count).getRank()) {
-                        Pot.setText("Seat 1 Wins");
+                        Pot.setText(R.string.Winner1);
+                        done = true;
                         return 1;
                     } else if (Seat1.getCard(count).getRank() < Seat2.getCard(count).getRank()) {
-                        Pot.setText("Seat 2 Wins");
+                        Pot.setText(R.string.Winner2);
+                        done = true;
                         return 2;
                     } else
                         count++;
                 }
                 if (!done) {
-                    Pot.setText("Split Pot");
+                    Pot.setText(R.string.Split);
                     return 0;
                 }
             }
@@ -133,7 +137,7 @@ public class PokerUtilities {
     }
 
     public static Double Equity(PokerHand Seat1, PokerHand Seat2) {
-        HashSet CardsHand = new HashSet();
+        HashSet<Card> CardsHand = new HashSet<>();
         CardsHand.addAll(Seat1.getHand());
         CardsHand.addAll(Seat2.getHand());
 

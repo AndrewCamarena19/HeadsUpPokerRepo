@@ -1,7 +1,7 @@
 package com.andyisdope.headsuppoker;
 
-/**
- * Created by Andy on 9/11/2017.
+/*
+  Created by Andy on 9/11/2017.
  */
 
 import android.app.Activity;
@@ -14,14 +14,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ListViewAdapter extends BaseAdapter{
+class ListViewAdapter extends BaseAdapter{
 
-    public ArrayList<HashMap<String, String>> list;
-    Activity activity;
-    TextView Table;
-    TextView Game;
-    TextView Stakes;
-    TextView Players;
+    private final ArrayList<HashMap<String, String>> list;
+    private final Activity activity;
+    private TextView Table;
+    private TextView Game;
+    private TextView Stakes;
+    private TextView Players;
 
     public ListViewAdapter(Activity activity,ArrayList<HashMap<String, String>> list){
         super();
@@ -59,12 +59,12 @@ public class ListViewAdapter extends BaseAdapter{
 
         if(convertView == null){
 
-            convertView=inflater.inflate(R.layout.columns, null);
+            convertView=inflater.inflate(R.layout.columns, parent);
 
-            Table =(TextView) convertView.findViewById(R.id.Table);
-            Game =(TextView) convertView.findViewById(R.id.Game);
-            Stakes =(TextView) convertView.findViewById(R.id.Stakes);
-            Players =(TextView) convertView.findViewById(R.id.Players);
+            Table = convertView.findViewById(R.id.Table);
+            Game = convertView.findViewById(R.id.Game);
+            Stakes = convertView.findViewById(R.id.Stakes);
+            Players = convertView.findViewById(R.id.Players);
 
         }
 

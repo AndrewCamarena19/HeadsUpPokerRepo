@@ -4,7 +4,8 @@ package com.andyisdope.headsuppoker;
  * Created by Andy on 9/12/2017.
  */
 
-public class Player {
+@SuppressWarnings({"ALL", "DefaultFileTemplate"})
+class Player {
 
     private String Seat;
     private String Username;
@@ -88,13 +89,11 @@ public class Player {
         return Stack;
     }
 
-    public boolean setStack(Double stack) {
+    public void setStack(Double stack) {
         if(Bankroll >= stack) {
             Stack = stack;
             Bankroll -= stack;
-            return true;
         }
-        return false;
     }
 
     public void addToStack(Double stack)

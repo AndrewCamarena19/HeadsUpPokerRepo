@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">PokerApp</string>
     <string name="Call">Call</string>
     <string name="Fold">Fold</string>
@@ -9,14 +9,14 @@
     <string name="BetAmount">Bet Amount</string>
     <string name="Card"> A Card</string>
     <string name="TakeSeat">Take Seat</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login" tools:ignore="UnusedResources">Sign in</string>
     <string name="Players">Players</string>
     <string name="Game">Game</string>
     <string name="Stakes">Stakes</string>
     <string name="Name">Name</string>
     <string name="GoTo">Go to Table</string>
     <string name="Cashier">Cashier</string>
-    <string name="Logout">Logout</string>
+    <string name="Logout" tools:ignore="UnusedResources">Logout</string>
     <string name="Register">Register</string>
     <string name="LeaveSeat">Leave Seat</string>
     <string name="Username">Username</string>
@@ -27,11 +27,17 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
+    <string name="error_invalid_email" tools:ignore="UnusedResources">This email address is invalid</string>
+    <string name="error_invalid_password" tools:ignore="UnusedResources">This password is too short</string>
+    <string name="error_incorrect_password" tools:ignore="UnusedResources">This password is incorrect</string>
+    <string name="error_field_required" tools:ignore="UnusedResources">This field is required</string>
+    <string name="PotDisplay">$ %1$d</string>
+    <string name="SetChips" tools:ignore="UnusedResources">%1$d</string>
+    <string name="Winner1">Seat 1 Wins </string>
+    <string name="Winner2">Seat 2 Wins </string>
+    <string name="Split">Split Pot </string>
+    <string name="ChipBankRoll">Chip Bankroll: $  %1$d</string>
+    <string name="permission_rationale" tools:ignore="UnusedResources">"Contacts permissions are needed for providing email
         completions."
     </string>
 </resources>
