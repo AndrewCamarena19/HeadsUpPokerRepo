@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -65,7 +66,7 @@ public class Table extends AppCompatActivity {
     private final ArrayList<Card> Deck = new ArrayList<>();
     private Player Player;
     private int numPlayers;
-    private Double Min, Max, CurrentPot, SmallBlind, BigBlind;
+    private Double Min, Max, CurrentPot, SmallBlind, BigBlind, VillianStack;
     private String TableName, CurrStreet, VillianName;
     private boolean inHand, AllIn;
     private PokerHand S1, S2;
@@ -88,7 +89,6 @@ public class Table extends AppCompatActivity {
         Max = Min * 3;
         Player.setSeat("NoSeat");
         Player.setDealer(false);
-        inHand = false;
         CurrStreet = "";
         VillianName = "";
     }
@@ -144,6 +144,7 @@ public class Table extends AppCompatActivity {
                     PokerUtilities.SetActionLabel("All In: " + currbet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
                     PotRef.setValue(CurrentPot);
                     ActionSeat.setValue(Player.getSeat() + ",AllIn," + currbet);
+                    AllIn = true;
                     BetAmount.setText("");
                     SetOffButtons();
                 } else if (currbet >= 2 * Double.parseDouble(action[2])) {
@@ -173,6 +174,7 @@ public class Table extends AppCompatActivity {
                     PotRef.setValue(CurrentPot);
                     ActionSeat.setValue(Player.getSeat() + ",AllIn," + currbet);
                     BetAmount.setText("");
+                    AllIn = true;
                 } else {
                     Pot.setText(getString(R.string.PotDisplay, CurrentPot));
                     PokerUtilities.SetActionLabel("Bet: " + currbet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
@@ -191,8 +193,6 @@ public class Table extends AppCompatActivity {
             public void onClick(View view) {
                 ActionSeat.setValue(Player.getSeat() + ",Fold," + CurrentPot);
                 PokerUtilities.SetActionLabel("Fold", Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
-                EndHand();
-                ResetCards();
             }
 
 
@@ -217,14 +217,28 @@ public class Table extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Double currbet = Double.parseDouble(action[2]);
-                Player.removeFromStack(currbet);
-                CurrentPot += currbet;
+                if(currbet > Player.getStack())
+                {
+                    double rebate = currbet - Player.getStack();
+                    currbet = Player.getStack();
+                    Player.removeFromStack(currbet);
+                    CurrentPot += currbet;
+                    ActionSeat.setValue(Player.getSeat() + ",CallIn," + currbet);
+                    AllIn = true;
+                }
+                else
+                {
+                    Player.removeFromStack(currbet);
+                    CurrentPot += currbet;
+                    ActionSeat.setValue(Player.getSeat() + ",Call," + currbet);
+                }
+
                 Pot.setText(getString(R.string.PotDisplay, CurrentPot));
                 PokerUtilities.SetActionLabel("Call: " + currbet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
                 PotRef.setValue(CurrentPot);
-                ActionSeat.setValue(Player.getSeat() + ",Call," + currbet);
                 BetAmount.setText("");
                 SetOffButtons();
+
                 if (AllIn) {
                     RunOutBoard();
                     AllIn = false;
@@ -353,8 +367,11 @@ public class Table extends AppCompatActivity {
                             S1.addCard(toAdd);
                             S2.addCard(toAdd);
                         }
+                        AddCardDisplay((ImageView) SeatCards.get(0).getChildAt(0), S1.getCard(0).toString());
+                        AddCardDisplay((ImageView) SeatCards.get(0).getChildAt(1), S1.getCard(1).toString());
+                        AddCardDisplay((ImageView) SeatCards.get(1).getChildAt(0), S2.getCard(0).toString());
+                        AddCardDisplay((ImageView) SeatCards.get(1).getChildAt(1), S2.getCard(1).toString());
                         ShowDown();
-                        ResetCards();
                         break;
                 }
             }
@@ -371,9 +388,18 @@ public class Table extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 action = dataSnapshot.getValue().toString().split(",");
                 if (!Player.getSeat().equals(action[0]) && action.length > 1 && !Player.getSeat().equals("NoSeat")) {
-                    if (action[1].equals("Bet") || action[1].equals("Raise")) {
-                        SetBetButtons();
-                        Call.setText("Call " + action[2]);
+                    if (action[1].equals("Bet") || action[1].equals("Raise") && !AllIn) {
+                        if(Double.parseDouble(action[2]) > Player.getStack())
+                        {
+                            Call.setText("Call " + Player.getStack());
+                            SetAllInButtons(action[2]);
+                        }
+                        else
+                        {
+                            SetBetButtons();
+                            Call.setText("Call " + action[2]);
+                        }
+
                         PokerUtilities.SetActionLabelVillian("Bet " + action[2], Seat2Name, Seat1Name, action[0], VillianName);
                     } else if (action[1].equals("Fold")) {
                         PokerUtilities.SetActionLabelVillian("Fold", Seat2Name, Seat1Name, action[0], VillianName);
@@ -386,7 +412,7 @@ public class Table extends AppCompatActivity {
                         PokerUtilities.SetActionLabelVillian("Check", Seat2Name, Seat1Name, action[0], VillianName);
                     } else if (action[1].equals("AllIn")) {
                         AllIn = true;
-                        SetAllInButtons();
+                        SetAllInButtons(action[2]);
                         PokerUtilities.SetActionLabelVillian("AllIn " + action[2], Seat2Name, Seat1Name, action[0], VillianName);
                     }
                 }
@@ -549,6 +575,8 @@ public class Table extends AppCompatActivity {
                 else if (!Player.getSeat().equals("NoSeat") && dataSnapshot.getValue().toString().equals("false"))
                     LeaveSeat.setVisibility(View.VISIBLE);
                 inHand = Boolean.parseBoolean(dataSnapshot.getValue().toString());
+                if(!inHand)
+                    EndHand();
             }
 
             @Override
@@ -582,13 +610,13 @@ public class Table extends AppCompatActivity {
                         AddCardDisplay((ImageView) SeatCards.get(1).getChildAt(0), cref[0]);
                         AddCardDisplay((ImageView) SeatCards.get(1).getChildAt(1), cref[1]);
                     }
-                    S1 = new PokerHand();
-                    S2 = new PokerHand();
-                    S1.addCard(Deck.get(0));
-                    S1.addCard(Deck.get(1));
-                    S2.addCard(Deck.get(2));
-                    S2.addCard(Deck.get(3));
                 }
+                S1 = new PokerHand();
+                S2 = new PokerHand();
+                S1.addCard(Deck.get(0));
+                S1.addCard(Deck.get(1));
+                S2.addCard(Deck.get(2));
+                S2.addCard(Deck.get(3));
             }
 
             @Override
@@ -745,7 +773,11 @@ public class Table extends AppCompatActivity {
         BetAmount.setVisibility(View.VISIBLE);
     }
 
-    private void SetAllInButtons() {
+    private void SetAllInButtons(String bet) {
+        SetOffButtons();
+        Call.setVisibility(View.VISIBLE);
+        Fold.setVisibility(View.VISIBLE);
+        Call.setText("Call " + bet);
     }
 
     private void StartHand() {
@@ -817,7 +849,6 @@ public class Table extends AppCompatActivity {
                 CurrStreet = "ShowDown";
                 break;
             case "ShowDown":
-                ShowDown();
                 break;
         }
         BoardStreet.child("Street").setValue(CurrStreet);
@@ -825,7 +856,14 @@ public class Table extends AppCompatActivity {
 
     private void RunOutBoard() {
         while (!CurrStreet.equals("ShowDown")) {
-            NextStreet();
+            new CountDownTimer(1500, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                }
+                public void onFinish() {
+                    NextStreet();
+                }
+            }.start();
         }
     }
 
@@ -836,7 +874,7 @@ public class Table extends AppCompatActivity {
             if (winner == 2) ActionSeat.setValue("Seat2,Wins," + CurrentPot);
             if (winner == 0) ActionSeat.setValue("Split," + CurrentPot);
             else ActionSeat.setValue("somethingiswrong," + CurrentPot);
-            EndHand();
+            Ongoing.setValue(false);
         }
     }
 
@@ -862,33 +900,34 @@ public class Table extends AppCompatActivity {
                 Seat2Ref.setValue(Player.getUsername() + "," + Player.getStack());
             }
         }
-        PostBlind.setVisibility(View.VISIBLE);
         PotRef.setValue(0);
-        ResetCards();
         Ongoing.setValue(false);
     }
 
     private void EndHand() {
-        ActionSeat.setValue("empty");
-        Ongoing.setValue(false);
-        inHand = false;
-        PostBlind.setVisibility(View.VISIBLE);
-        if (Player.getDealer()) {
-            if (Player.getSeat().equals("Seat1"))
-                Button.setValue("Seat2");
-            else
-                Button.setValue("Seat1");
+        if(!Player.getSeat().equals("NoSeat")) {
+            PostBlind.setVisibility(View.VISIBLE);
+            if (Player.getDealer()) {
+                if (Player.getSeat().equals("Seat1"))
+                    Button.setValue("Seat2");
+                else
+                    Button.setValue("Seat1");
+
+                ActionSeat.setValue("empty");
+                BoardStreet.child("Board").setValue("NA,NA,NA,NA,NA");
+                SeatCardsRef.child("Seat1").setValue("NA,NA");
+                SeatCardsRef.child("Seat2").setValue("NA,NA");
+                BoardStreet.child("Street").setValue("empty");
+            }
+            Player.setDealer(!Player.getDealer());
+            SetOffButtons();
         }
-        Player.setDealer(!Player.getDealer());
-        SetOffButtons();
-        BoardStreet.child("Board").setValue("NA,NA,NA,NA,NA");
-        SeatCardsRef.child("Seat1").setValue("NA,NA");
-        SeatCardsRef.child("Seat2").setValue("NA,NA");
-        BoardStreet.child("Street").setValue("empty");
+        ResetCards();
     }
 
     //TODO implement hand replay
     //TODO Test street Progression with two phones
     //TODO finish nextstreet function
     //TODO generate hand equities without simulation
+    //TODO if allin for more than opponent situation
 }
