@@ -13,7 +13,6 @@ import java.util.Locale;
  * Created by Andy on 11/28/2017.
  */
 
-@SuppressWarnings({"ALL", "DefaultFileTemplate"})
 class PokerUtilities {
 
     private static double wins = 0;
@@ -24,41 +23,21 @@ class PokerUtilities {
         if (Player.getSeat().equals("Seat1")) {
             Seat1Chips.setText(String.format(Locale.ENGLISH,"%.2f ", Player.getStack()));
             Seat1Name.setText(act);
-            Seat1Name.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Seat1Name.setText(Player.getUsername());
-                }
-            }, 2000);
+            Seat1Name.postDelayed(() -> Seat1Name.setText(Player.getUsername()), 2000);
         } else {
             Seat2Chips.setText(String.format(Locale.ENGLISH,"%.2f ", Player.getStack()));
             Seat2Name.setText(act);
-            Seat2Name.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Seat2Name.setText(Player.getUsername());
-                }
-            }, 2000);
+            Seat2Name.postDelayed(() -> Seat2Name.setText(Player.getUsername()), 2000);
         }
     }
 
     static void SetActionLabelVillian(String act, final TextView Seat2Name, final TextView Seat1Name, String Seat, final String Villian) {
         if (Seat.equals("Seat1")) {
             Seat1Name.setText(act);
-            Seat1Name.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Seat1Name.setText(Villian);
-                }
-            }, 2000);
+            Seat1Name.postDelayed(() -> Seat1Name.setText(Villian), 2000);
         } else {
             Seat2Name.setText(act);
-            Seat2Name.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Seat2Name.setText(Villian);
-                }
-            }, 2000);
+            Seat2Name.postDelayed(() -> Seat2Name.setText(Villian), 2000);
         }
     }
 

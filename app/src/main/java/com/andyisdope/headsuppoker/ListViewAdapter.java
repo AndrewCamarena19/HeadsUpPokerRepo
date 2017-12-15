@@ -59,7 +59,7 @@ class ListViewAdapter extends BaseAdapter{
 
         if(convertView == null){
 
-            convertView=inflater.inflate(R.layout.columns, parent);
+            convertView=inflater.inflate(R.layout.columns, null);
 
             Table = convertView.findViewById(R.id.Table);
             Game = convertView.findViewById(R.id.Game);

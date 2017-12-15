@@ -4,33 +4,26 @@ package com.andyisdope.headsuppoker;
  * Created by Andy on 9/12/2017.
  */
 
-@SuppressWarnings({"ALL", "DefaultFileTemplate"})
 class Player {
 
     private String Seat;
     private String Username;
-    private Boolean Allin;
     private Double Bankroll;
     private Double Stack;
     private PokerHand Hand;
     private String UID;
+    private Boolean Dealer;
 
-    public Boolean getDealer() {
+    Boolean getDealer() {
         return Dealer;
     }
 
-    public void setDealer(Boolean dealer) {
+    void setDealer(Boolean dealer) {
         Dealer = dealer;
     }
 
-    private Boolean Dealer;
-
-    public String getUID() {
+    String getUID() {
         return UID;
-    }
-
-    public void setUID(String UID) {
-        this.UID = UID;
     }
 
     public Player(String U) {
@@ -48,11 +41,6 @@ class Player {
             Bankroll -= toTake;
     }
 
-    public Player(String user, Double Bank) {
-        Username = user;
-        Bankroll = Bank;
-    }
-
     public String getSeat() {
         return Seat;
     }
@@ -67,14 +55,6 @@ class Player {
 
     public void setUsername(String username) {
         Username = username;
-    }
-
-    public Boolean getAllin() {
-        return Allin;
-    }
-
-    public void setAllin(Boolean allin) {
-        Allin = allin;
     }
 
     public Double getBankroll() {

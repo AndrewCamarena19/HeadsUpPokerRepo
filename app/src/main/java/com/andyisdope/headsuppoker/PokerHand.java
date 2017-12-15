@@ -1,16 +1,6 @@
 package com.andyisdope.headsuppoker;
-
-/*
-  Created by Andy on 9/12/2017.
- */
-
 import java.util.ArrayList;
 
-/**
- *
- * @author Andy
- */
-@SuppressWarnings("ALL")
 class PokerHand extends Hand {
 
     private String FlushSuit;
@@ -106,11 +96,11 @@ class PokerHand extends Hand {
         }
     }
 
-    public int getHandStrength() {
+    int getHandStrength() {
         return HandStrength;
     }
 
-    public void CalculateHand() {
+    void CalculateHand() {
         int ranks[] = new int[15];
         for (Card card : super.getHand()) {
             ranks[card.getRank()]++;

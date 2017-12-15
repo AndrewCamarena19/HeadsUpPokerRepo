@@ -8,7 +8,6 @@ import java.util.Comparator;
  * Created by Andy on 9/12/2017.
  */
 
-@SuppressWarnings({"ALL", "DefaultFileTemplate"})
 public class Hand {
 
     private ArrayList<Card> Cards;
@@ -35,7 +34,7 @@ public class Hand {
         Collections.sort(Cards, CardComparatorLow);
     }
 
-    public Card getCard(int index) {
+    Card getCard(int index) {
         return Cards.get(index);
     }
 
@@ -54,17 +53,7 @@ public class Hand {
         }
     }
 
-    private final Comparator<Card> CardComparatorHigh = new Comparator<Card>() {
-        @Override
-        public int compare(Card card, Card t1) {
-            return t1.getRank().compareTo(card.getRank());
-        }
-    };
+    private final Comparator<Card> CardComparatorHigh = (card1, card2) -> card2.getRank().compareTo(card1.getRank());
 
-    private final Comparator<Card> CardComparatorLow = new Comparator<Card>() {
-        @Override
-        public int compare(Card card, Card t1) {
-            return card.getRank().compareTo(t1.getRank());
-        }
-    };
+    private final Comparator<Card> CardComparatorLow = (card1, card2) -> card1.getRank().compareTo(card2.getRank());
 }

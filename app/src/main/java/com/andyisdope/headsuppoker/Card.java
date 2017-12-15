@@ -6,15 +6,13 @@ import java.util.Objects;
  * Created by Andy on 9/12/2017.
  */
 
-@SuppressWarnings({"ALL", "DefaultFileTemplate"})
 public class Card {
 
     private final Integer Rank;
     private final String Suit;
-    @SuppressWarnings("unused")
     private final String Color;
 
-    public Card(Integer rank, String suit) {
+    Card(Integer rank, String suit) {
         Rank = rank;
         Suit = suit;
         if (suit.equals("Clubs") || suit.equals("Spades")) {
@@ -24,7 +22,7 @@ public class Card {
         }
     }
 
-    public Card(char rank, char suit) {
+    Card(char rank, char suit) {
         Rank = Integer.parseInt(String.valueOf(rank));
         Suit = String.valueOf(suit);
         if (Suit.equals("Clubs") || Suit.equals("Spades")) {
@@ -34,11 +32,11 @@ public class Card {
         }
     }
 
-    public Integer getRank() {
+    Integer getRank() {
         return Rank;
     }
 
-    public String getSuit() {
+    String getSuit() {
         return Suit;
     }
 
