@@ -16,8 +16,7 @@ public class Hand {
         Cards = new ArrayList<>();
     }
 
-    public Hand(Card one, Card two)
-    {
+    public Hand(Card one, Card two) {
         Cards = new ArrayList<>();
         Cards.add(one);
         Cards.add(two);
@@ -28,8 +27,7 @@ public class Hand {
         Collections.sort(Cards, CardComparatorHigh);
     }
 
-    public void addCardLow(Card card)
-    {
+    public void addCardLow(Card card) {
         Cards.add(card);
         Collections.sort(Cards, CardComparatorLow);
     }

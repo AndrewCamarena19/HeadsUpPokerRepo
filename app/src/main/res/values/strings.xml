@@ -36,7 +36,7 @@
     <string name="Winner1">Seat 1 Wins </string>
     <string name="Winner2">Seat 2 Wins </string>
     <string name="Split">Split Pot </string>
-    <string name="ChipBankRoll">Chip Bankroll: $  %1$f</string>
+    <string name="ChipBankRoll">Chip Bankroll: $ %1$f</string>
     <string name="permission_rationale" tools:ignore="UnusedResources">"Contacts permissions are needed for providing email
         completions."
     </string>
