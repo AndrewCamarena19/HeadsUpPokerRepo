@@ -31,13 +31,13 @@ class PokerUtilities {
         }
     }
 
-    static void SetActionLabelVillian(String act, final TextView Seat2Name, final TextView Seat1Name, String Seat, final String Villian) {
+    static void SetActionLabelVillian(String act, final TextView Seat2Name, final TextView Seat1Name, String Seat, final String V1, final String V2) {
         if (Seat.equals("Seat1")) {
             Seat1Name.setText(act);
-            Seat1Name.postDelayed(() -> Seat1Name.setText(Villian), 2000);
+            Seat1Name.postDelayed(() -> Seat1Name.setText(V1), 2000);
         } else {
             Seat2Name.setText(act);
-            Seat2Name.postDelayed(() -> Seat2Name.setText(Villian), 2000);
+            Seat2Name.postDelayed(() -> Seat2Name.setText(V2), 2000);
         }
     }
 
