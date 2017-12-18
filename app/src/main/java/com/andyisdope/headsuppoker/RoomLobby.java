@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class RoomLobby extends AppCompatActivity {
 
@@ -146,7 +147,7 @@ public class RoomLobby extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 player.setUsername(dataSnapshot.child("Username").getValue().toString());
                 player.setBankroll(Double.parseDouble(dataSnapshot.child("BankRoll").getValue().toString()));
-                BankRollText.setText(getString(R.string.ChipBankRoll, player.getBankroll()));
+                BankRollText.setText("BankRoll: $" + String.format(Locale.ENGLISH, "%.2f", player.getBankroll()) + "");
                 PlayerNameText.setText(player.getUsername());
             }
 
