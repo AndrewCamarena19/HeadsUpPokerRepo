@@ -23,7 +23,26 @@ public class Card {
     }
 
     Card(char rank, char suit) {
-        Rank = Integer.parseInt(String.valueOf(rank));
+        switch (rank) {
+            case 'a':
+                Rank = 14;
+                break;
+            case 'q':
+                Rank = 12;
+                break;
+            case 'j':
+                Rank = 11;
+                break;
+            case 'k':
+                Rank = 13;
+                break;
+            case 't':
+                Rank = 10;
+                break;
+            default:
+                Rank = Integer.parseInt(String.valueOf(rank));
+                break;
+        }
         Suit = String.valueOf(suit);
         if (Suit.equals("Clubs") || Suit.equals("Spades")) {
             Color = "Black";
