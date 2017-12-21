@@ -71,14 +71,14 @@
                 android:max="100000" />
 
             <EditText
+                android:id="@+id/BetText"
                 android:layout_width="78dp"
                 android:layout_height="match_parent"
-                android:inputType="numberDecimal"
                 android:ems="10"
-                android:id="@+id/BetText"
                 android:hint="@string/BetAmount"
-                android:textSize="12sp"
-                android:textAlignment="viewStart" />
+                android:inputType="numberDecimal"
+                android:textAlignment="viewStart"
+                android:textSize="12sp" />
         </FrameLayout>
 
         <Button
