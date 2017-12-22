@@ -76,6 +76,7 @@
                 android:layout_height="match_parent"
                 android:ems="10"
                 android:hint="@string/BetAmount"
+                android:imeOptions="actionDone|flagNoExtractUi"
                 android:inputType="numberDecimal"
                 android:textAlignment="viewStart"
                 android:textSize="12sp" />
@@ -355,6 +356,16 @@
                 android:layout_alignParentEnd="true"
                 android:elevation="0dp"
                 android:text="@string/PostBlind"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/RemoveBlindBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:elevation="0dp"
+                android:text="@string/RemoveBlind"
                 android:visibility="gone" />
 
             <TextView
