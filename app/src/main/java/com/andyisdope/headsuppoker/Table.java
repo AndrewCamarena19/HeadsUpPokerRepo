@@ -41,7 +41,7 @@ public class Table extends AppCompatActivity {
 
     private SeekBar SeekBet;
     private EditText BetAmount, stack, ToSend;
-    private Button Raise, TakeSeat, LeaveSeat, PostBlind, Bet, Fold, Check, Call;
+    private Button Raise, TakeSeat, LeaveSeat, PostBlind, Bet, Fold, Check, Call, RemoveBlind;
     private ImageView Dealer1, Dealer2;
     private ArrayList<FrameLayout> SeatCards;
     private ArrayList<ImageView> Streets;
@@ -119,6 +119,12 @@ public class Table extends AppCompatActivity {
             LeaveSeat.setVisibility(View.GONE);
         });
 
+        RemoveBlind = findViewById(R.id.RemoveBlindBtn);
+        RemoveBlind.setOnClickListener(view -> {
+            RemoveBlind();
+            LeaveSeat.setVisibility(View.VISIBLE);
+        });
+
         Raise = findViewById(R.id.BtnRaise);
         Raise.setOnClickListener(view -> {
             if(!BetAmount.getText().toString().equals("")) {
@@ -186,9 +192,12 @@ public class Table extends AppCompatActivity {
         });
         BetAmount = findViewById(R.id.BetText);
         BetAmount.setOnEditorActionListener((textView, i, keyEvent) -> {
-            Integer prog = (int) Math.round(Double.parseDouble(BetAmount.getText().toString()));
-            if (i == EditorInfo.IME_ACTION_DONE)
-                SeekBet.setProgress(prog);
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(BetAmount.getWindowToken(), 0);
+                Integer prog = (int)Math.round(Double.parseDouble(BetAmount.getText().toString()));
+                SeekBet.setProgress((int)Math.round(prog/Player.getStack()*100000));
+            }
             return true;
         });
         SeekBet = findViewById(R.id.BetSlider);
@@ -289,6 +298,7 @@ public class Table extends AppCompatActivity {
                             Call.setText("Call " + action[2]);
                         }
                     } else if (action[1].equals("Fold")) {
+                        SetOffButtons();
                         PokerUtilities.SetActionLabelVillian("Fold", Seat2Name, Seat1Name, action[0], Seat1[0], Seat2[0]);
                         Payout("Fold");
                     } else if (action[1].equals("Call")) {
@@ -455,13 +465,18 @@ public class Table extends AppCompatActivity {
         Ongoing.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.getValue().toString().equals("true") && !Player.getSeat().equals("NoSeat"))
+                if (dataSnapshot.getValue().toString().equals("true") && !Player.getSeat().equals("NoSeat")) {
                     LeaveSeat.setVisibility(View.GONE);
+                    RemoveBlind.setVisibility(View.GONE);
+                }
                 else if (!Player.getSeat().equals("NoSeat") && dataSnapshot.getValue().toString().equals("false"))
                     LeaveSeat.setVisibility(View.VISIBLE);
                 inHand = Boolean.parseBoolean(dataSnapshot.getValue().toString());
                 if (!inHand)
                     EndHand();
+
+
+
             }
 
             @Override
@@ -620,6 +635,31 @@ public class Table extends AppCompatActivity {
             Seat2Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + "");
 
         PostBlind.setVisibility(View.GONE);
+        RemoveBlind.setVisibility(View.VISIBLE);
+    }
+
+    private void RemoveBlind()
+    {
+        if (Player.getDealer()) {
+            Player.addToStack(SmallBlind);
+            CurrentPot -= SmallBlind;
+            Pot.setText("$ " + CurrentPot);
+            BlindsRef.child("Small").setValue(false);
+        } else {
+            Player.addToStack(BigBlind);
+            CurrentPot -= BigBlind;
+            Pot.setText("$ " + CurrentPot);
+            BlindsRef.child("Big").setValue(false);
+        }
+        PotRef.setValue(CurrentPot);
+        if (Player.getSeat().equals("Seat1"))
+            Seat1Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + "");
+
+        else
+            Seat2Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + "");
+
+        RemoveBlind.setVisibility(View.GONE);
+        PostBlind.setVisibility(View.VISIBLE);
     }
 
     private void SetOffButtons() {
