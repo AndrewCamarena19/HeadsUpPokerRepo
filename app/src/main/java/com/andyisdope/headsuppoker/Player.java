@@ -70,19 +70,17 @@ class Player {
     }
 
     public void setStack(Double stack) {
-        if(Bankroll >= stack) {
+        if (Bankroll >= stack) {
             Stack = stack;
             Bankroll -= stack;
         }
     }
 
-    public void addToStack(Double stack)
-    {
+    public void addToStack(Double stack) {
         Stack += stack;
     }
 
-    public void removeFromStack(Double stack)
-    {
+    public void removeFromStack(Double stack) {
         Stack -= stack;
     }
 

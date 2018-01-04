@@ -21,11 +21,11 @@ class PokerUtilities {
 
     static void SetActionLabel(String act, TextView Seat1Chips, TextView Seat2Chips, final TextView Seat2Name, final TextView Seat1Name, final Player Player) {
         if (Player.getSeat().equals("Seat1")) {
-            Seat1Chips.setText(String.format(Locale.ENGLISH,"%.2f ", Player.getStack()));
+            Seat1Chips.setText(String.format(Locale.ENGLISH, "%.2f ", Player.getStack()));
             Seat1Name.setText(act);
             Seat1Name.postDelayed(() -> Seat1Name.setText(Player.getUsername()), 2000);
         } else {
-            Seat2Chips.setText(String.format(Locale.ENGLISH,"%.2f ", Player.getStack()));
+            Seat2Chips.setText(String.format(Locale.ENGLISH, "%.2f ", Player.getStack()));
             Seat2Name.setText(act);
             Seat2Name.postDelayed(() -> Seat2Name.setText(Player.getUsername()), 2000);
         }

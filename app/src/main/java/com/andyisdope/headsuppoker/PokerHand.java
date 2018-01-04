@@ -1,4 +1,5 @@
 package com.andyisdope.headsuppoker;
+
 import java.util.ArrayList;
 
 class PokerHand extends Hand {
@@ -372,8 +373,7 @@ class PokerHand extends Hand {
 
     }
 
-    public String getHandName()
-    {
+    public String getHandName() {
         return HandName;
     }
 

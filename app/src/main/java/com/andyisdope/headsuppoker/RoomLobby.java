@@ -97,7 +97,7 @@ public class RoomLobby extends AppCompatActivity {
             Intent nIntent = new Intent(getBaseContext(), Table.class);
             nIntent.putExtra("UID", player.getUID());
             nIntent.putExtra("TableName", TableName);
-            nIntent.putExtra("Game",Game.getText().toString());
+            nIntent.putExtra("Game", Game.getText().toString());
             nIntent.putExtra("Stakes", Stakes.getText().toString());
             nIntent.putExtra("PlayerName", player.getUsername());
             nIntent.putExtra("Bankroll", player.getBankroll());
