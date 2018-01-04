@@ -127,7 +127,7 @@ public class Table extends AppCompatActivity {
 
         Raise = findViewById(R.id.BtnRaise);
         Raise.setOnClickListener(view -> {
-            if(!BetAmount.getText().toString().equals("")) {
+            if (!BetAmount.getText().toString().equals("")) {
                 double currbet = Double.parseDouble(BetAmount.getText().toString());
                 if (currbet >= 2 * Double.parseDouble(action[2]))
                     SendAction("Raise", currbet, Player);
@@ -137,7 +137,7 @@ public class Table extends AppCompatActivity {
         });
         Bet = findViewById(R.id.BtnBet);
         Bet.setOnClickListener(view -> {
-            if(!BetAmount.getText().toString().equals("")) {
+            if (!BetAmount.getText().toString().equals("")) {
                 double currbet = Double.parseDouble(BetAmount.getText().toString());
                 SendAction("Bet", currbet, Player);
             }
@@ -195,8 +195,8 @@ public class Table extends AppCompatActivity {
             if (i == EditorInfo.IME_ACTION_DONE) {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(BetAmount.getWindowToken(), 0);
-                Integer prog = (int)Math.round(Double.parseDouble(BetAmount.getText().toString()));
-                SeekBet.setProgress((int)Math.round(prog/Player.getStack()*100000));
+                Integer prog = (int) Math.round(Double.parseDouble(BetAmount.getText().toString()));
+                SeekBet.setProgress((int) Math.round(prog / Player.getStack() * 100000));
             }
             return true;
         });
@@ -252,17 +252,33 @@ public class Table extends AppCompatActivity {
                 BoardCards = dataSnapshot.child("Board").getValue().toString().split(",");
                 switch (CurrStreet) {
                     case "Flop":
+                        if(!Player.getDealer())
+                            SetNoBetButtons();
+                        else
+                            SetOffButtons();
                         AddCardDisplay(Streets.get(0), BoardCards[0]);
                         AddCardDisplay(Streets.get(1), BoardCards[1]);
                         AddCardDisplay(Streets.get(2), BoardCards[2]);
+                        ActionSeat.setValue("empty");
                         break;
                     case "Turn":
+                        if(!Player.getDealer())
+                            SetNoBetButtons();
+                        else
+                            SetOffButtons();
                         AddCardDisplay(Streets.get(3), BoardCards[3]);
+                        ActionSeat.setValue("empty");
                         break;
                     case "River":
+                        if(!Player.getDealer())
+                            SetNoBetButtons();
+                        else
+                            SetOffButtons();
                         AddCardDisplay(Streets.get(4), BoardCards[4]);
+                        ActionSeat.setValue("empty");
                         break;
                     case "ShowDown":
+                        if(Player.getDealer())
                         for (String x : BoardCards) {
                             Card toAdd = new Card(x.charAt(1), x.charAt(0));
                             S1.addCard(toAdd);
@@ -468,13 +484,11 @@ public class Table extends AppCompatActivity {
                 if (dataSnapshot.getValue().toString().equals("true") && !Player.getSeat().equals("NoSeat")) {
                     LeaveSeat.setVisibility(View.GONE);
                     RemoveBlind.setVisibility(View.GONE);
-                }
-                else if (!Player.getSeat().equals("NoSeat") && dataSnapshot.getValue().toString().equals("false"))
+                } else if (!Player.getSeat().equals("NoSeat") && dataSnapshot.getValue().toString().equals("false"))
                     LeaveSeat.setVisibility(View.VISIBLE);
                 inHand = Boolean.parseBoolean(dataSnapshot.getValue().toString());
                 if (!inHand)
                     EndHand();
-
 
 
             }
@@ -638,8 +652,7 @@ public class Table extends AppCompatActivity {
         RemoveBlind.setVisibility(View.VISIBLE);
     }
 
-    private void RemoveBlind()
-    {
+    private void RemoveBlind() {
         if (Player.getDealer()) {
             Player.addToStack(SmallBlind);
             CurrentPot -= SmallBlind;
@@ -877,43 +890,28 @@ public class Table extends AppCompatActivity {
                     NextStreet();
                 break;
             default:
-                if(play.getStack() == 0) {
+                if (play.getStack() == 0) {
                     ActionSeat.setValue(Player.getSeat() + ",AllIn," + bet);
                     Action = "All In";
-                }
-                else
-                    ActionSeat.setValue(Player.getSeat() + ","+Action+"," + bet);
+                } else
+                    ActionSeat.setValue(Player.getSeat() + "," + Action + "," + bet);
                 break;
         }
         PokerUtilities.SetActionLabel(Action + ": " + bet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, play);
         if (play.getSeat().equals("Seat1"))
-            Seat1Name.postDelayed(()->Seat1Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + ""), 1500);
+            Seat1Name.postDelayed(() -> Seat1Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + ""), 1500);
         else
-            Seat2Name.postDelayed(()->Seat2Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + ""), 1500);
+            Seat2Name.postDelayed(() -> Seat2Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + ""), 1500);
         Pot.setText(getString(R.string.PotDisplay, CurrentPot));
         PotRef.setValue(CurrentPot);
         SetOffButtons();
-        //get a chip amount
-        //remove from stack
-        //increment current pot
-        //send action
-        //set an all in
-        //update seat ref
-        //set the pot text
-        //use actionlabel
-        //set pot ref
-        //set betamount text
-        //set correct buttons
+
     }
 
     //TODO implement hand replay
-    //TODO Test street Progression with two phones
     //TODO generate hand equities without simulation
     //TODO if allin for more than opponent situation
-    //TODO create remove posted blind buttons
-    //TODO try to clean up client and server side messaging
     //TODO Implement handName with cards, "Two Pair, Queens and threes"
-    //TODO fix decimal places on chipsettext and lobby bankroll
-    //TODO Fix Buttons, create function, fix calling order
     //TODO Allin logic
+    //TODO fix split pot changing both players identities
 }
