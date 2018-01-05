@@ -129,8 +129,10 @@ public class Table extends AppCompatActivity {
         Raise.setOnClickListener(view -> {
             if (!BetAmount.getText().toString().equals("")) {
                 double currbet = Double.parseDouble(BetAmount.getText().toString());
-                if (currbet >= 2 * Double.parseDouble(action[2]))
+                if (currbet >= 2 * Double.parseDouble(action[2])) {
+                    SetOffButtons();
                     SendAction("Raise", currbet, Player);
+                }
                 else
                     Toast.makeText(getBaseContext(), "Raise must be at least 2x the bet", Toast.LENGTH_LONG).show();
             }
@@ -138,12 +140,14 @@ public class Table extends AppCompatActivity {
         Bet = findViewById(R.id.BtnBet);
         Bet.setOnClickListener(view -> {
             if (!BetAmount.getText().toString().equals("")) {
+                SetOffButtons();
                 double currbet = Double.parseDouble(BetAmount.getText().toString());
                 SendAction("Bet", currbet, Player);
             }
         });
         Fold = findViewById(R.id.BtnFold);
         Fold.setOnClickListener(view -> {
+            SetOffButtons();
             ActionSeat.setValue(Player.getSeat() + ",Fold," + CurrentPot);
             PokerUtilities.SetActionLabel("Fold", Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, Player);
         });
@@ -160,6 +164,7 @@ public class Table extends AppCompatActivity {
         });
         Call = findViewById(R.id.BtnCall);
         Call.setOnClickListener(view -> {
+            SetOffButtons();
             Double currbet = Double.parseDouble(action[2]);
             SendAction("Call", currbet, Player);
         });
@@ -332,7 +337,7 @@ public class Table extends AppCompatActivity {
                 if (Player.getSeat().equals(action[0]) && action[1].equals("Wins")) {
                     Payout("Wins");
                 }
-                if (action[0].equals("Split")) {
+                else if (action[0].equals("Split")) {
                     Payout("Split");
                 }
             }
@@ -815,7 +820,7 @@ public class Table extends AppCompatActivity {
             int winner = PokerUtilities.CheckWinner(S1, S2, Pot);
             if (winner == 1) ActionSeat.setValue("Seat1,Wins," + CurrentPot);
             if (winner == 2) ActionSeat.setValue("Seat2,Wins," + CurrentPot);
-            if (winner == 0) ActionSeat.setValue("Split," + CurrentPot);
+            if (winner == 0) ActionSeat.setValue("Split");
             else ActionSeat.setValue("somethingiswrong," + CurrentPot);
         }
     }
@@ -838,9 +843,11 @@ public class Table extends AppCompatActivity {
         } else {
             double split = CurrentPot - (CurrentPot / 2);
             CurrentPot = CurrentPot - split;
-            SendMessage("Split Pot");
-            Pot.setText("Split Pot");
-            Pot.postDelayed(() -> Ongoing.setValue(false), 2500);
+            if(Player.getDealer()) {
+                SendMessage("Split Pot");
+                Pot.setText("Split Pot");
+                Pot.postDelayed(() -> Ongoing.setValue(false), 2500);
+            }
             if (Player.getSeat().equals("Seat1")) {
                 Player.addToStack(CurrentPot);
                 Seat1Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + "");
