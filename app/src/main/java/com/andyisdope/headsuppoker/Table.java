@@ -81,6 +81,7 @@ public class Table extends AppCompatActivity {
         Player.setSeat("NoSeat");
         Player.setDealer(false);
         CurrStreet = "";
+        VillianStack = 0.0;
         VillianName = "";
     }
 
@@ -132,8 +133,7 @@ public class Table extends AppCompatActivity {
                 if (currbet >= 2 * Double.parseDouble(action[2])) {
                     SetOffButtons();
                     SendAction("Raise", currbet, Player);
-                }
-                else
+                } else
                     Toast.makeText(getBaseContext(), "Raise must be at least 2x the bet", Toast.LENGTH_LONG).show();
             }
         });
@@ -172,8 +172,16 @@ public class Table extends AppCompatActivity {
         TakeSeat.setOnClickListener(view -> {
             if (Seat1Name.getText().toString().equals("")) {
                 setStack("Seat1");
+                Player.setSeat("Seat1");
+                numPlayers++;
+                NumRef.setValue(numPlayers);
+                Seat1Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", 0.0) + "");
             } else if (Seat2Name.getText().toString().equals("")) {
                 setStack("Seat2");
+                Player.setSeat("Seat2");
+                Seat2Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", 0.0) + "");
+                numPlayers++;
+                NumRef.setValue(numPlayers);
             }
         });
         LeaveSeat = findViewById(R.id.LeaveSeat);
@@ -257,7 +265,7 @@ public class Table extends AppCompatActivity {
                 BoardCards = dataSnapshot.child("Board").getValue().toString().split(",");
                 switch (CurrStreet) {
                     case "Flop":
-                        if(!Player.getDealer())
+                        if (!Player.getDealer())
                             SetNoBetButtons();
                         else
                             SetOffButtons();
@@ -267,7 +275,7 @@ public class Table extends AppCompatActivity {
                         ActionSeat.setValue("empty");
                         break;
                     case "Turn":
-                        if(!Player.getDealer())
+                        if (!Player.getDealer())
                             SetNoBetButtons();
                         else
                             SetOffButtons();
@@ -275,7 +283,7 @@ public class Table extends AppCompatActivity {
                         ActionSeat.setValue("empty");
                         break;
                     case "River":
-                        if(!Player.getDealer())
+                        if (!Player.getDealer())
                             SetNoBetButtons();
                         else
                             SetOffButtons();
@@ -283,12 +291,12 @@ public class Table extends AppCompatActivity {
                         ActionSeat.setValue("empty");
                         break;
                     case "ShowDown":
-                        if(Player.getDealer())
-                        for (String x : BoardCards) {
-                            Card toAdd = new Card(x.charAt(1), x.charAt(0));
-                            S1.addCard(toAdd);
-                            S2.addCard(toAdd);
-                        }
+                        if (Player.getDealer())
+                            for (String x : BoardCards) {
+                                Card toAdd = new Card(x.charAt(1), x.charAt(0));
+                                S1.addCard(toAdd);
+                                S2.addCard(toAdd);
+                            }
                         AddCardDisplay((ImageView) SeatCards.get(0).getChildAt(0), cref1[0]);
                         AddCardDisplay((ImageView) SeatCards.get(0).getChildAt(1), cref1[1]);
                         AddCardDisplay((ImageView) SeatCards.get(1).getChildAt(0), cref2[0]);
@@ -336,8 +344,7 @@ public class Table extends AppCompatActivity {
                 }
                 if (Player.getSeat().equals(action[0]) && action[1].equals("Wins")) {
                     Payout("Wins");
-                }
-                else if (action[0].equals("Split")) {
+                } else if (action[0].equals("Split")) {
                     Payout("Split");
                 }
             }
@@ -352,12 +359,15 @@ public class Table extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.getValue().toString().equals("empty")) {
+                    if (Player.getSeat().equals("Seat2") && !Seat1[1].equals(""))
+                        VillianStack = Double.parseDouble(Seat1[1]);
                     Seat1 = dataSnapshot.getValue().toString().split(",");
                     Seat1Name.setText(Seat1[0]);
                     Seat1Chips.setText("$ " + Seat1[1]);
                 } else {
                     Seat1Name.setText("");
                     Seat1Chips.setText("");
+                    VillianStack = 0.0;
                 }
             }
 
@@ -371,12 +381,17 @@ public class Table extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.getValue().toString().equals("empty")) {
+                    if (Player.getSeat().equals("Seat1") && !Seat2[1].equals(""))
+                        VillianStack = Double.parseDouble(Seat2[1]);
                     Seat2 = dataSnapshot.getValue().toString().split(",");
                     Seat2Name.setText(Seat2[0]);
                     Seat2Chips.setText("$ " + Seat2[1]);
                 } else {
+                    Seat2[0] = "";
+                    Seat2[1] = "";
                     Seat2Name.setText("");
                     Seat2Chips.setText("");
+                    VillianStack = 0.0;
                 }
             }
 
@@ -599,6 +614,7 @@ public class Table extends AppCompatActivity {
 
     }
 
+    //move seat inc and assign before stack selection
     private void setStack(final String Seat) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         stack = new EditText(this);
@@ -610,28 +626,38 @@ public class Table extends AppCompatActivity {
                     if (Double.parseDouble(stack.getText().toString()) <= Max &&
                             Double.parseDouble(stack.getText().toString()) >= Min) {
                         Player.setStack(Double.parseDouble(stack.getText().toString()));
-                        Player.setSeat(Seat);
-                        numPlayers++;
+                        SendMessage(Player.getUsername() + " has joined the table");
+                        Players.child("Seat").setValue(Seat);
+                        PostBlind.setVisibility(View.VISIBLE);
+                        LeaveSeat.setVisibility(View.VISIBLE);
+                        TakeSeat.setVisibility(View.GONE);
                         if (Seat.equals("Seat1"))
                             Seat1Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + "");
 
                         else
                             Seat2Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + "");
-
-                        SendMessage(Player.getUsername() + " has joined the table");
-                        Players.child("Seat").setValue(Seat);
-                        PostBlind.setVisibility(View.VISIBLE);
-                        NumRef.setValue(numPlayers);
-                        LeaveSeat.setVisibility(View.VISIBLE);
-                        TakeSeat.setVisibility(View.GONE);
                     } else {
                         Toast.makeText(getBaseContext(), "Must bet more than min and less than max buy in", Toast.LENGTH_SHORT).show();
+                        cancelReserveSeat();
                         dialog.cancel();
                     }
                 })
-                .setNegativeButton("Leave", (dialog, id) -> dialog.cancel());
+                .setNegativeButton("Leave", (dialog, id) -> {
+                    cancelReserveSeat();
+                    dialog.cancel();
+                });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void cancelReserveSeat() {
+        numPlayers--;
+        NumRef.setValue(numPlayers);
+        if (Player.getSeat().equals("Seat1"))
+            Seat1Ref.setValue("empty");
+        else if (Player.getSeat().equals("Seat2"))
+            Seat2Ref.setValue("empty");
+        Player.setSeat("NoSeat");
     }
 
     private void PostBlind() {
@@ -843,7 +869,7 @@ public class Table extends AppCompatActivity {
         } else {
             double split = CurrentPot - (CurrentPot / 2);
             CurrentPot = CurrentPot - split;
-            if(Player.getDealer()) {
+            if (Player.getDealer()) {
                 SendMessage("Split Pot");
                 Pot.setText("Split Pot");
                 Pot.postDelayed(() -> Ongoing.setValue(false), 2500);
@@ -887,7 +913,7 @@ public class Table extends AppCompatActivity {
         CurrentPot += bet;
         switch (Action) {
             case "Call":
-                if (play.getStack() == 0) {
+                if (play.getStack() == 0 || VillianStack == 0) {
                     ActionSeat.setValue(Player.getSeat() + ",CallIn," + bet);
                     RunOutBoard();
                     Action = "All In";
