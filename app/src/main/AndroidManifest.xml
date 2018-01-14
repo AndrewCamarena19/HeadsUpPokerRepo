@@ -18,17 +18,22 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RoomLobby"
+        <activity
+            android:name=".RoomLobby"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape">
-        </activity>
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".Table"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
+        <activity android:name=".RazzTable"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"/>
+
     </application>
 
 </manifest>

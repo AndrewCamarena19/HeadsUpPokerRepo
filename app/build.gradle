@@ -25,6 +25,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -45,3 +46,4 @@ apply plugin: 'com.google.gms.google-services'
 repositories {
     mavenCentral()
 }
+apply plugin: 'kotlin-android-extensions'
