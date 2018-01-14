@@ -2,15 +2,13 @@ package com.andyisdope.headsuppoker;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -265,7 +263,7 @@ public class Table extends AppCompatActivity {
                 BoardCards = dataSnapshot.child("Board").getValue().toString().split(",");
                 switch (CurrStreet) {
                     case "Flop":
-                        if (!Player.getDealer())
+                        if (!Player.getDealer() && !AllIn)
                             SetNoBetButtons();
                         else
                             SetOffButtons();
@@ -275,7 +273,7 @@ public class Table extends AppCompatActivity {
                         ActionSeat.setValue("empty");
                         break;
                     case "Turn":
-                        if (!Player.getDealer())
+                        if (!Player.getDealer() && !AllIn)
                             SetNoBetButtons();
                         else
                             SetOffButtons();
@@ -283,7 +281,7 @@ public class Table extends AppCompatActivity {
                         ActionSeat.setValue("empty");
                         break;
                     case "River":
-                        if (!Player.getDealer())
+                        if (!Player.getDealer() && !AllIn)
                             SetNoBetButtons();
                         else
                             SetOffButtons();
@@ -828,16 +826,13 @@ public class Table extends AppCompatActivity {
     }
 
     private void RunOutBoard() {
+        final Handler handle = new Handler();
         while (!CurrStreet.equals("ShowDown")) {
-            new CountDownTimer(1500, 1000) {
-
-                public void onTick(long millisUntilFinished) {
-                }
-
-                public void onFinish() {
+            if (Player.getSeat().equals("Seat1"))
+                handle.postDelayed(() -> {
+                    SendMessage(CurrStreet);
                     NextStreet();
-                }
-            }.start();
+                }, 1500);
         }
     }
 
@@ -887,6 +882,7 @@ public class Table extends AppCompatActivity {
 
     private void EndHand() {
         if (!Player.getSeat().equals("NoSeat")) {
+            AllIn = false;
             PostBlind.setVisibility(View.VISIBLE);
             if (Player.getDealer()) {
                 if (Player.getSeat().equals("Seat1"))
@@ -907,8 +903,12 @@ public class Table extends AppCompatActivity {
     }
 
     private void SendAction(String Action, Double bet, Player play) {
-        if (bet >= play.getStack())
+        double rebate = 0.0;
+        if (bet >= play.getStack()) {
+            rebate = bet;
             bet = play.getStack();
+            rebate -= bet;
+        }
         play.removeFromStack(bet);
         CurrentPot += bet;
         switch (Action) {
@@ -919,7 +919,7 @@ public class Table extends AppCompatActivity {
                     Action = "All In";
                 } else
                     ActionSeat.setValue(Player.getSeat() + ",Call," + bet);
-                if (!CurrStreet.equals("Pre") || bet > SmallBlind)
+                if ((!CurrStreet.equals("Pre") || bet > SmallBlind))
                     NextStreet();
                 break;
             default:
@@ -930,6 +930,7 @@ public class Table extends AppCompatActivity {
                     ActionSeat.setValue(Player.getSeat() + "," + Action + "," + bet);
                 break;
         }
+
         PokerUtilities.SetActionLabel(Action + ": " + bet, Seat1Chips, Seat2Chips, Seat2Name, Seat1Name, play);
         if (play.getSeat().equals("Seat1"))
             Seat1Name.postDelayed(() -> Seat1Ref.setValue(Player.getUsername() + "," + String.format(Locale.ENGLISH, "%.2f", Player.getStack()) + ""), 1500);
@@ -939,12 +940,12 @@ public class Table extends AppCompatActivity {
         PotRef.setValue(CurrentPot);
         SetOffButtons();
 
-    }
 
-    //TODO implement hand replay
-    //TODO generate hand equities without simulation
-    //TODO if allin for more than opponent situation
-    //TODO Implement handName with cards, "Two Pair, Queens and threes"
-    //TODO Allin logic
-    //TODO fix split pot changing both players identities
+        //TODO implement hand replay
+        //TODO generate hand equities without simulation
+        //TODO if allin for more than opponent situation
+        //TODO Implement handName with cards, "Two Pair, Queens and threes"
+        //TODO Allin logic
+        //TODO add reload after all in and remove post blind
+    }
 }
