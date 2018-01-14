@@ -8,11 +8,11 @@ import java.util.Objects;
 
 public class Card {
 
-    private final Integer Rank;
-    private final String Suit;
-    private final String Color;
+    public final Integer Rank;
+    public final String Suit;
+    public final String Color;
 
-    Card(Integer rank, String suit) {
+    public Card(Integer rank, String suit) {
         Rank = rank;
         Suit = suit;
         if (suit.equals("Clubs") || suit.equals("Spades")) {
@@ -51,7 +51,7 @@ public class Card {
         }
     }
 
-    Integer getRank() {
+    public Integer getRank() {
         return Rank;
     }
 
