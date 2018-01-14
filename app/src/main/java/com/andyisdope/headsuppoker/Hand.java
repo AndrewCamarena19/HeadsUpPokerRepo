@@ -27,9 +27,8 @@ public class Hand {
         Collections.sort(Cards, CardComparatorHigh);
     }
 
-    public void addCardLow(Card card) {
+    void addCardNoSort(Card card) {
         Cards.add(card);
-        Collections.sort(Cards, CardComparatorLow);
     }
 
     Card getCard(int index) {
@@ -53,5 +52,5 @@ public class Hand {
 
     private final Comparator<Card> CardComparatorHigh = (card1, card2) -> card2.getRank().compareTo(card1.getRank());
 
-    private final Comparator<Card> CardComparatorLow = (card1, card2) -> card1.getRank().compareTo(card2.getRank());
+    static final Comparator<Card> CardComparatorLow = (card1, card2) -> card1.getRank().compareTo(card2.getRank());
 }
