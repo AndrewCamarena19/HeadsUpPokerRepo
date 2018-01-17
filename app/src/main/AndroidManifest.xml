@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name=".LoginActivity"
+            android:name=".Activities.LoginActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -23,14 +23,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RoomLobby"
+            android:name=".Activities.RoomLobby"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape"></activity>
         <activity
-            android:name=".Table"
+            android:name=".Activities.Table"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape" />
-        <activity android:name=".RazzTable"
+        <activity android:name=".Activities.RazzTable"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape"/>
 
